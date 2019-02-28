@@ -4,7 +4,7 @@ module.exports = {
     node: true
   },
   'extends': [
-    'plugin:vue/essential',
+    'plugin:vue/recommended',
     'eslint:recommended'
   ],
   rules: {
@@ -34,7 +34,22 @@ module.exports = {
     'key-spacing': ['error', {'beforeColon': false}],
     'space-before-function-paren': ['error', 'never'],
     'operator-linebreak': ['error', 'before'],
-    'brace-style': 'error'
+    'brace-style': 'error',
+    'vue/attribute-hyphenation': ['error', 'always'],
+    'vue/html-closing-bracket-newline': ['error', {'multiline': 'never'}],
+    'vue/html-indent': ['error', 4],
+    'vue/html-self-closing': 'error',
+    'vue/max-attributes-per-line': ['error', {
+          'singleline': 2,
+          'multiline': {
+            'max': 1,
+            'allowFirstLine': true
+          }
+      }],
+    'vue/mustache-interpolation-spacing': 'error',
+    'vue/name-property-casing': 'error',
+    'vue/this-in-template': 'error',
+    'vue/singleline-html-element-content-newline': 'error'
   },
   parserOptions: {
     parser: 'babel-eslint'
