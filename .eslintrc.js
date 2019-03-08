@@ -16,9 +16,9 @@ module.exports = {
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
     'indent': ['error', 4, {
       'VariableDeclarator': {
-        'var': 2,
-        'let': 2,
-        'const': 3
+        'var': 1,
+        'let': 1,
+        'const': 1
       }
     }],
     'semi': 'error',
