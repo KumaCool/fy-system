@@ -1,0 +1,14 @@
+$_url = '~@'
+$_img = '~_img'
+$_font = '~_font'
+
+// 宽高大小
+size($v, $range = no, $lineHeight = no)
+    if !$range || match('(width|line)$',$range)
+        width $v
+    if !$range || match('(height|line)$',$range)
+        height $v
+    if match('^(min|max)-(width|height)$', $range)
+        {$range} $v
+    if $lineHeight == 'line' || $range == 'line'
+        line-height $v
