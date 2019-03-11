@@ -32,7 +32,7 @@ export default new Vuex.Store({
             let msg = {
                     top: true,
                     color: 'info',
-                    timeout: 2000,
+                    timeout: 6000,
                     content: '',
                     ...data,
                 },
