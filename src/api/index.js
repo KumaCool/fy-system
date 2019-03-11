@@ -27,7 +27,7 @@ Axios.interceptors.response.use(response => {
     let data = response.data;
     if (whileList.code.indexOf(data.code) >= 0 || whileList.url.indexOf(Router.currentRoute.path) >= 0) {
         return data.result;
-    } else errorHandle(data);
+    } else return errorHandle(data);
 }, err => errorHandle(err));
 
 const errorHandle = err => {
@@ -37,7 +37,7 @@ const errorHandle = err => {
         message.context = err.response.data;
     } else if (err.code) {
         message.title = err.code;
-        message.context = err.errorMessage;
+        message.context = err.msg;
     } else if (err.request) {
         message.title = '网络错误';
         message.context = err.message;
@@ -47,11 +47,11 @@ const errorHandle = err => {
         // eslint-disable-next-line
     } else console.dir(err);
 
-    Store.commit('alertMessage', {
+    Store.dispatch('alertMessage', {
         color: 'error',
         content: `${message.title}: ${message.context}`,
     });
-
+    return Promise.reject(message);
 };
 
 // 标准化API
