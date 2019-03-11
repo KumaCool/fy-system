@@ -1,4 +1,6 @@
 const components = {
+    // 提示消息
+    alertMessage: () => import('~/ui/alert/message'),
 };
 export default {
     install(Vue) {
