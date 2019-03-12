@@ -1,4 +1,6 @@
 const components = {
+    // 自动表单集
+    autoForms: () => import('~/ui/forms/index'),
     // 提示消息
     alertMessage: () => import('~/ui/alert/message'),
 };
