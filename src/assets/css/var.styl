@@ -12,3 +12,20 @@ size($v, $range = no, $lineHeight = no)
         {$range} $v
     if $lineHeight == 'line' || $range == 'line'
         line-height $v
+
+// 圆角
+// $position 圆角方向
+radius($v = 5px, $position = no)
+    if $v is a 'string'
+        $position = $v
+        $v = 5px
+    if !($position is a 'string')
+        border-radius $v
+    else if match('top', $position)
+        border-radius $v $v 0 0
+    else if match('bottom', $position)
+        border-radius 0 0 $v $v
+    else if match('left', $position)
+        border-radius $v 0 0 $v
+    else if match('right', $position)
+        border-radius 0 $v $v 0
