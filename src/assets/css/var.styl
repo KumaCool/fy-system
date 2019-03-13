@@ -3,19 +3,19 @@ $_img = '~_img'
 $_font = '~_font'
 
 // 宽高大小
-size($v, $range = no, $lineHeight = no)
-    if !$range || match('(width|line)$',$range)
-        width $v
-    if !$range || match('(height|line)$',$range)
-        height $v
-    if match('^(min|max)-(width|height)$', $range)
+size($v, $range = false, $lineHeight = false)
+    if $range && $range != 'line'
         {$range} $v
+    if !$range || match('(width|line)$', $range)
+        width $v
+    if !$range || match('(height|line)$', $range)
+        height $v
     if $lineHeight == 'line' || $range == 'line'
         line-height $v
 
 // 圆角
 // $position 圆角方向
-radius($v = 5px, $position = no)
+radius($v = 5px, $position = false)
     if $v is a 'string'
         $position = $v
         $v = 5px
