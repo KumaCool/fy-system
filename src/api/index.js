@@ -10,20 +10,21 @@ const ModuleFiles = require.context('./modules', true, /(?<!index)\.js$/),
     Modules = Import(ModuleFiles, false),
     // 配置
     ConfigFiles = require.context('./', false, /(?<!index)\.js$/),
-    Config = Import(ConfigFiles, false);
+    Config = Import(ConfigFiles, false),
+    Instance = Axios.create();
 
-Axios.defaults.baseURL = Config.server;
-Axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-Axios.defaults.withCredentials = true;
+Instance.defaults.baseURL = Config.server;
+Instance.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+Instance.defaults.withCredentials = true;
 
 // 请求拦截
-Axios.interceptors.request.use(request => {
+Instance.interceptors.request.use(request => {
     request.data = qs.stringify(request.data);
     return request;
 });
 
 // 返回拦截
-Axios.interceptors.response.use(response => {
+Instance.interceptors.response.use(response => {
     let data = response.data;
     if (whileList.code.indexOf(data.code) >= 0 || whileList.url.indexOf(Router.currentRoute.path) >= 0) {
         return data.result;
@@ -33,8 +34,12 @@ Axios.interceptors.response.use(response => {
 const errorHandle = err => {
     let message = {};
     if (err.response) {
-        message.title = err.response.status + ' ' + err.response.statusText;
-        message.context = err.response.data;
+        message.title = err.response.data.status;
+        message.context = err.response.data.message;
+        // 用户登陆超时
+        if (err.response.data.exception && err.response.data.exception.search(/HjlLoginException$/) >= 0) {
+            Store.commit('storeUser/signOut');
+        }
     } else if (err.code) {
         message.title = err.code;
         message.context = err.msg;
@@ -46,7 +51,6 @@ const errorHandle = err => {
         message.context = err.message;
         // eslint-disable-next-line
     } else console.dir(err);
-
     Store.dispatch('alertMessage', {
         color: 'error',
         content: `${message.title}: ${message.context}`,
@@ -74,7 +78,11 @@ const array2length4 = api => {
 
 // 封装Axios
 const toAxios = (url, request, response, type) => {
-    return Axios[type](url, request).then(response);
+    // 添加Token
+    if (Store.getters['storeUser/token']) {
+        Instance.defaults.headers.common['Authorization'] = Store.getters['storeUser/token'];
+    }
+    return Instance[type](url, request).then(response);
 };
 
 // 封装API模块
