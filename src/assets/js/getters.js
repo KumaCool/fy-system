@@ -16,3 +16,11 @@ export const isLength = v => R.compose(
     R.identical(v),
     v => v.length
 );
+
+// 空判断取反
+// notEmpty:: a -> Boolean
+export const notEmpty = R.complement(R.either(R.isNil, R.isEmpty));
+
+// 必填判断
+// required:: a -> Boolean | String
+export const required = R.compose(errorMessage('不能为空!'), notEmpty);
