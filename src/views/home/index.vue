@@ -7,25 +7,7 @@
             <v-flex shrink>
                 <v-toolbar class="toolbar"
                            flat>
-                    <!-- <v-list class="logoMain">
-                        <v-list-tile avatar>
-                            <v-list-tile-content>
-                                <v-list-tile-title class="logo">
-                                    <img src="~_img/home/logo.png">
-                                    <i>FENGYI</i>
-                                </v-list-tile-title>
-                            </v-list-tile-content>
-                            <v-list-tile-avatar class="button" size>
-                                <v-btn flat
-                                       icon
-                                       color="primary"
-                                       @click="changeMiniMenu">
-                                    <v-icon>iconfont icon-menu</v-icon>
-                                </v-btn>
-                            </v-list-tile-avatar>
-                        </v-list-tile>
-                    </v-list> -->
-                    <v-toolbar-title class="newLogoMain">
+                    <v-toolbar-title class="logoMain">
                         <img src="~_img/home/logo.png">
                         <i>FENGYI</i>
                         <div class="menuButton">
@@ -60,7 +42,7 @@
                         </v-navigation-drawer>
                     </v-flex>
                     <v-flex md12>
-                        <v-content>
+                        <v-content class="homeMain">
                             <v-tabs class="tabs">
                                 <v-tab v-for="(item, index) in tabs"
                                        :key="index"
@@ -138,7 +120,7 @@ export default {
     background $_color_white
     $topHeight = 50px
     $border = 1px solid $_color_border_home
-    .newLogoMain
+    .logoMain
         padding-left 18px
         width 185px
         box-sizing border-box
@@ -167,36 +149,12 @@ export default {
             height $topHeight!important
     .nav
         max-width 185px
-        .logoMain >>>
-            padding 0
-            border-bottom $border
-            .v-list__tile
-                padding 0
-                height $topHeight
-        .logo
-            padding-left 18px
-            color $_color_primary
-            font-size 16px
-            font-weight bold
-            display flex
-            img
-                margin-right 10px
-                size(24px)
         .menu
             padding 0
-    .main
-        display flex
-        flex-direction column
-        .toolbar >>>
-            height $topHeight
-            background-color $_color_white
-            border-bottom $border
-            box-sizing content-box
-            & > .v-toolbar__content
-                padding 0
-                height $topHeight!important
+    .homeMain
+        height: 100%
         .tabs
-            flex auto
+            height: 100%
             display flex
             flex-direction column
             .tabsMain >>>
