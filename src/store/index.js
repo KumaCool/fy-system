@@ -47,3 +47,16 @@ export default new Vuex.Store({
     },
     modules,
 });
+
+// 空值执行分发请求数据
+// empty2Actions:: State a -> Actions b -> State a
+export function empty2Actions(state, action) {
+    if (R.isEmpty(state)) {
+        R.ifElse(
+            R.is(Array),
+            R.apply(Store.dispatch),
+            v => Store.dispatch(v)
+        )(action);
+    }
+    return state;
+}
