@@ -7,6 +7,8 @@ const components = {
     alertMessage: () => import('~/ui/alert/message'),
     // 列表型表格
     listTable: () => import('~/ui/table'),
+    // 带标题弹窗
+    titleDialog: () => import('~/ui/dialog/titleDialog'),
 };
 export default {
     install(Vue) {
