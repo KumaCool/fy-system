@@ -34,7 +34,7 @@ import {
     mobileCN,
     errorMessage,
 } from '_js/getters';
-import emitPhoneCode from '@/views/login/emitPhoneCode';
+import emitPhoneCode from '@/views/user/login/emitPhoneCode';
 
 export default {
     name: 'EditPassword',

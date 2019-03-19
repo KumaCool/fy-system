@@ -1,6 +1,5 @@
 <template lang="html">
     <auto-forms ref="form"
-                v-model="test"
                 class="only signIn"
                 lazy-validation
                 :data="formData"
@@ -44,14 +43,13 @@ import {
     mobileCN,
     errorMessage,
 } from '_js/getters';
-import emitPhoneCode from '@/views/login/emitPhoneCode';
+import emitPhoneCode from '@/views/user/login/emitPhoneCode';
 
 export default {
     name: 'SignIn',
     components: { emitPhoneCode },
     data() {
         return {
-            test: false,
             formData: {
                 mobile: '',
                 password: '',
