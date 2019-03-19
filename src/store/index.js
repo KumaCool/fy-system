@@ -29,7 +29,7 @@ const ModuleFiles = require.context('./modules', true, /(?<!index)\.js$/),
                 state.tabs.splice(index, 1);
                 // 跳转路由
                 let length = state.tabs.length,
-                    path = length ? state.tabs[length - 1] : '/';
+                    path = length ? state.tabs[length - 1].url : '/';
                 Router.push({ path });
             },
             alertMessagePush(state, data) {
