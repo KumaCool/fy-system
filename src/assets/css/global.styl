@@ -20,3 +20,46 @@ a
 
 .theButton
     cursor pointer
+
+// 表单 > 标签单行排列方式
+.formItem.row
+    display flex
+    flex-flow row wrap
+    align-items center
+    .label
+        margin-right 10px
+        & + *
+            flex auto
+
+// 表单
+.theme--light.v-input
+    // 文本框样式
+    &.v-text-field
+        .v-input__control
+            .v-input__slot
+                background $_color_background_input!important
+                border none
+                .v-select__selections
+                    padding-top 0
+        &:not(.v-input--is-focused):not(.v-input--has-state)
+            .v-input__control .v-input__slot:hover
+                    border none
+    // 单选框
+    &.v-input--checkbox
+        .v-input--selection-controls__input
+            margin-right 0
+        .v-input--selection-controls__ripple
+            top calc(50% - 19px)
+            size(24px)
+        .v-icon
+            font-size 14px
+        .v-label
+            font-size 12px
+
+// 翻页按钮
+.v-pagination__item:focus
+    outline-style none
+
+// 小型图标按钮
+.v-btn--floating.v-btn--small
+    size(25px)
