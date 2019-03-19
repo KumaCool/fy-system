@@ -5,6 +5,8 @@ const components = {
     datePicker: () => import('~/ui/forms/datePicker'),
     // 提示消息
     alertMessage: () => import('~/ui/alert/message'),
+    // 列表型表格
+    listTable: () => import('~/ui/table'),
 };
 export default {
     install(Vue) {
