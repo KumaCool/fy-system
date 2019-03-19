@@ -29,7 +29,7 @@
                 </v-btn>
             </select-forms>
         </v-flex>
-        <v-flex grow my-3>
+        <v-flex shrink my-3>
             <list-table class="table"
                         :headers="userListHeader"
                         :items="userList"
@@ -112,7 +112,7 @@
                            @close="dialog = false" />
             </title-dialog>
         </v-flex>
-        <v-flex>
+        <v-flex grow>
             <v-btn color="warning" @click="showUserForm">
                 添加员工
             </v-btn>
@@ -155,50 +155,6 @@ export default {
                 qIdCrad: '',
                 qType: '',
             },
-            // 用户列表标题
-            userListHeader: [
-                {
-                    text: '姓名',
-                    value: 'userName',
-                },
-                {
-                    text: '英文名',
-                    value: 'englishName',
-                },
-                {
-                    text: '性别',
-                    value: 'gender',
-                },
-                {
-                    text: '年龄',
-                    value: 'age',
-                },
-                {
-                    text: '证件类型',
-                    value: 'type',
-                },
-                {
-                    text: '证件号',
-                    value: 'idCrad',
-                },
-                {
-                    text: '证件有效期',
-                    value: 'validDate',
-                },
-                {
-                    text: '单独购票',
-                    value: 'buyState',
-                },
-                {
-                    text: '账号',
-                    value: 'loginName',
-                },
-                {
-                    text: '',
-                    value: 'name',
-                    sortable: false,
-                },
-            ],
             // 用户数据
             userList: [],
             // 用户表单
@@ -219,6 +175,27 @@ export default {
                 ['qIdCrad', '证件号码'],
                 ['__', '证件类型'],
             ];
+        },
+        // 用户列表标题
+        userListHeader() {
+            let keys = [
+                    'text',
+                    'value',
+                    'sortable',
+                ],
+                data = [
+                    ['姓名', 'userName'],
+                    ['英文名', 'englishName'],
+                    ['性别', 'gender'],
+                    ['年龄', 'age'],
+                    ['证件类型', 'type'],
+                    ['证件号', 'idCrad'],
+                    ['证件有效期', 'validDate'],
+                    ['单独购票', 'buyState'],
+                    ['账号', 'loginName'],
+                    ['', ''],
+                ];
+            return R.map(R.zipObj(keys), data);
         },
         // 弹层标题
         dialogTitle() {
