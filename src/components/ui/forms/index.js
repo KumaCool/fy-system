@@ -33,29 +33,33 @@ export default createHOC(VForm, {
         // 应用于layout
         layoutColumn: Boolean,
         layoutAlignCenter: Boolean,
+        // 应用于flex
+        flexRow: Boolean,
     },
     render(h) {
         // 占位符
         const placeholder = '__',
-            container = el => h(VContainer, { ...this.$props.container }, el),
-            layout = el => {
-                let opt = {
+            container = el => {
+                let layoutOpt = {
                     attrs: {},
                     ...this.$props.layout,
                 };
-                if (this.$props.layoutColumn) opt.attrs.column = true;
-                if (this.$props.layoutAlignCenter) opt.attrs['align-center'] = true;
-                return h(VLayout, opt, el);
+                if (this.$props.layoutColumn) layoutOpt.attrs.column = true;
+                if (this.$props.layoutAlignCenter) layoutOpt.attrs['align-center'] = true;
+                return h(VContainer, { ...this.$props.container }, [h(VLayout, layoutOpt, el)]);
             },
-            flex = (el, label) => {
+            flex = el => {
                 let opt = {
-                    class: { label },
-                    attrs: { xs1: label },
+                    class: {
+                        formItem: true,
+                        row: this.flexRow,
+                    },
                     ...this.$props.flex,
                 };
                 return h(VFlex, opt, [el]);
             },
-            template = (label, value) => layout([flex(label, true), flex(value)]);
+            div = (el, className) => (<div class={className}>{el}</div>),
+            template = (label, value) => flex([div(label, 'label'), div(value)]);
         let defaultSlots = this.$slots.default ? [...this.$slots.default] : [],
             forms = this.$props.forms || [];
         if (forms.length) {
@@ -94,13 +98,15 @@ export default createHOC(VForm, {
                     return label
                         ? template(label, slot)
                         : !slot.componentInstance
-                            ? layout([flex(slot)])
+                            ? flex(slot)
                             : slot;
                 } else return template(label, h(com, options));
             });
         }
         // 将剩余默认插槽格式化为标准表单件
-        defaultSlots = defaultSlots.map(slot => layout([flex(slot)]));
+        defaultSlots = defaultSlots.map(slot => {
+            return slot.data && slot.data.staticClass === 'spacer' ? slot : flex(slot);
+        });
         return h(VForm, {
             props: this.$props,
             attrs: this.$attrs,
