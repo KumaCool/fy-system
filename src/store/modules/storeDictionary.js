@@ -13,7 +13,7 @@ let state = {
     cardType: [
         {
             label: '身份证',
-            value: 1,
+            value: 0,
         },
     ],
 };
@@ -24,7 +24,7 @@ const getters = {
         // findDic:: [State key, a] -> State a
         findDic: state => {
             return (target, value) => {
-                if (!target || !value) return null;
+                if (!target || R.isNil(value)) return null;
                 let find = key => R.find(R.propEq(key, value));
                 return R.compose(
                     R.when(
