@@ -10,11 +10,16 @@ export default createHOC(VDialog, {
         title: String,
         // 内容的高
         contentHeight: String,
+        // 每次弹窗渲染
+        renderEvery: Boolean,
     },
     render(h) {
         let props = { ...this.$props },
-            className = 'GlobalTitleDialog';
+            className = 'GlobalTitleDialog',
+            children = this.$scopedSlots.default();
         if (props.contentClass.indexOf(className) < 0) props.contentClass = R.trim(props.contentClass + ' ' + className);
+        // 判断是否每次弹窗渲染
+        if (this.renderEvery && !this.$attrs.value) children = [];
         return h(
             VDialog,
             {
@@ -28,7 +33,7 @@ export default createHOC(VDialog, {
                     h(
                         VCardText,
                         { style: { height: this.$props.contentHeight } },
-                        this.$scopedSlots.default()
+                        children
                     ),
                 ]),
             ]
