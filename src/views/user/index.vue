@@ -33,7 +33,7 @@
             <list-table class="table"
                         :headers="userListHeader"
                         :items="userList"
-                        :loading="loading"
+                        :loading="dataLoading"
                         hide-actions>
                 <template v-slot:items="props">
                     <td>{{ props.item.userName }}</td>
@@ -104,6 +104,7 @@
             <title-dialog v-model="dialog"
                           max-width="500px"
                           scrollable
+                          render-every
                           content-height="500px"
                           :title="dialogTitle"
                           transition="dialog-transition">
@@ -135,18 +136,17 @@
 import { mapGetters, mapActions } from 'vuex';
 import SelectForms from '~/ui/forms/selectForms';
 import UserForm from './userForm';
-import pages from '~/ui/page';
+
+import pageMixin from '@/mixins/page';
 export default {
     name: 'UserList',
     components: {
         SelectForms,
         UserForm,
-        pages,
     },
+    mixins: [pageMixin],
     data() {
         return {
-            pageLength: 0,
-            page: 1,
             // 搜索表单数据
             selectData: {
                 qUserName: '',
@@ -163,7 +163,6 @@ export default {
             dialog: false,
             // 弹窗类型: 0添加, 修改
             dialogType: 0,
-            loading: false,
         };
     },
     computed: {
@@ -221,16 +220,13 @@ export default {
         // 获取列表数据
         getData() {
             let post = {
-                page: this.page,
-                rows: 10,
+                ...this.getPage(),
                 ...this.selectData,
             };
             this.loading = true;
             return this.getUserList(post).then(res => {
-                this.page = res.currPage;
-                this.pageLength = res.totalPage;
                 this.userList = res.list;
-                this.loading = false;
+                this.setPage(res.totalPage, res.totalCount);
             });
         },
         // 添加/编辑用户
