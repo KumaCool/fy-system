@@ -19,7 +19,10 @@ Instance.defaults.withCredentials = true;
 
 // 请求拦截
 Instance.interceptors.request.use(request => {
-    request.data = qs.stringify(request.data);
+    // 判断是否拦截处理
+    if (request.interceptorsRequest === false) {
+        request = R.omit('interceptorsRequest', request);
+    } else request.data = qs.stringify(request.data);
     return request;
 });
 
@@ -59,53 +62,60 @@ const errorHandle = err => {
 };
 
 // 标准化API
-// array2length4:: APIData Array -> Array
-const array2length4 = api => {
-    let length = api.length,
-        lastArg = api[length - 1],
-        cb = v => v,
-        url = api[0],
-        request = typeof api[1] === 'function' ? api[1] : cb,
-        response = typeof api[2] === 'function' ? api[2] : cb,
-        type = typeof lastArg === 'string' && length > 1 ? lastArg : 'post';
-    return [
-        url,
-        request,
-        response,
-        type,
-    ];
+// formatArg2API:: APIData Array -> Array
+const formatArg2API = api => {
+    if (typeof api[0] !== 'string') throw new Error('API格式错误,首个元素必须为字符串');
+    // 注意: 该对象顺序会影响其它函数
+    let data = {
+            type: 'post',
+            response: v => v,
+            url: api[0],
+            request: v => v,
+            config: {},
+        },
+        keySelector = (v, i) => {
+            return R.cond([
+                [R.allPass([R.is(Function), R.always(R.equals(1, i))]), R.always('response')],
+                [R.is(Function), R.always('request')],
+                [R.is(String), R.always('type')],
+                [R.is(Object), R.always('config')],
+            ])(v);
+        };
+    R.tail(api).forEach((v, i) => {
+        let key = keySelector(v, i);
+        if (key) data[key] = v;
+    });
+    return R.values(data);
 };
 
 // 封装Axios
-const toAxios = (url, request, response, type) => {
+const toAxios = (type, response, ...args) => {
     // 添加Token
     if (Store.getters['storeUser/token']) {
         Instance.defaults.headers.common['Authorization'] = Store.getters['storeUser/token'];
     }
-    return Instance[type](url, request).then(response);
+    return R.apply(Instance[type], args).then(response);
 };
-
 // 封装API模块
 // XXX: 函数式不优雅,待优化
 let formatAPI = R.map(
         R.map(
             R.compose(
                 v => request => {
-                    let lens = R.lensIndex(1),
-                        fn = R.view(lens, v),
-                        temp = R.compose(
-                            R.apply(toAxios),
-                            R.set(lens, fn(request))
-                        );
-                    return temp(v);
+                    // 聚焦 request
+                    let lensIndex = R.lensIndex(3),
+                        fn = R.view(lensIndex, v),
+                        value = R.set(lensIndex, fn(request), v);
+                    return R.apply(toAxios, value);
                 },
-                array2length4
+                formatArg2API,
             )
         )
     ),
     api = formatAPI(Modules);
 
 export {
+    formatArg2API,
     toAxios,
     api,
 };
