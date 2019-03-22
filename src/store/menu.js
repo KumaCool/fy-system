@@ -32,7 +32,7 @@ export default [
         pid: 4,
         title: '消费记录',
         icon: '',
-        url: '/user',
+        url: '/finance/expenseSheet',
     },
     {
         id: 6,
