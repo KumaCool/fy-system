@@ -9,6 +9,7 @@ export default createHOC(AutoForms, { name: 'SelectForms' }, {
             let data = props.container || {};
             return R.mergeDeepRight({
                 attrs: {
+                    'ma-0': true,
                     'px-4': true,
                     'py-2': true,
                 },
