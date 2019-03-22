@@ -24,3 +24,20 @@ export const notEmpty = R.complement(R.either(R.isNil, R.isEmpty));
 // 必填判断
 // required:: a -> Boolean | String
 export const required = R.compose(errorMessage('不能为空!'), notEmpty);
+
+// 比较两个日期的大小
+// relationDate:: Date a -> Date b -> Number
+export const relationDate = R.curry((startDate, endDate) => {
+    let getTime = v => {
+            let d = new Date(v);
+            d.setHours(0);
+            d.setMinutes(0);
+            d.setSeconds(0);
+            d.setMilliseconds(0);
+            return d.getTime();
+        },
+        startTime = getTime(startDate),
+        endTime = getTime(endDate);
+    if (startTime === endTime) return 0;
+    return startTime > endTime ? 1 : -1;
+});
