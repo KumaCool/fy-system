@@ -20,12 +20,13 @@ const DIC_ACTION = 'storeDictionary/getDictionary',
         // findDic:: [State key, a] -> State a
         findDic: state => {
             return (target, value) => {
-                if (!target || R.isNil(value)) return null;
+                let defaultObj = Object.create(null);
+                if (!target || R.isNil(value)) return defaultObj;
                 let find = key => R.find(R.propEq(key, value));
                 return R.compose(
                     R.when(
                         R.isNil,
-                        () => Object.create(null)
+                        R.always(defaultObj)
                     ),
                     R.either(find('value'), find('label'))
                 )(state[target]);
