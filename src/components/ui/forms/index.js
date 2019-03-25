@@ -60,12 +60,12 @@ export default createHOC(VForm, {
             },
             div = (el, className) => (<div class={className}>{el}</div>),
             template = (label, value) => flex([div(label, 'label'), div(value)]);
-        let defaultSlots = this.$slots.default ? [...this.$slots.default] : [],
+        let defaultSlots = this.$slots.default ? this.$slots.default.filter(v => !v.isComment) : [],
             forms = this.$props.forms || [];
         if (forms.length) {
             forms = forms.map(v => {
                 if (!v) return;
-                let value = typeof v === 'string' ? [v] : v,
+                let value = typeof v === 'string' ? [v] : R.clone(v),
                     key = value[0],
                     label = value[1],
                     com = typeof value[2] === 'string' ? value[2] : VTextField,

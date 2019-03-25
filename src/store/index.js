@@ -3,6 +3,7 @@ import Vuex from 'vuex';
 import Import from '_js/import';
 import Router from '@/router';
 import menus from './menu';
+import { overList } from '_js/mutations';
 
 Vue.use(Vuex);
 const ModuleFiles = require.context('./modules', true, /(?<!index)\.js$/),
@@ -27,16 +28,15 @@ const ModuleFiles = require.context('./modules', true, /(?<!index)\.js$/),
             },
             tabDel(state, index) {
                 state.tabs.splice(index, 1);
-                // 跳转路由
-                let length = state.tabs.length,
-                    path = length ? state.tabs[length - 1].url : '/';
-                Router.push({ path });
             },
             alertMessagePush(state, data) {
                 state.alertMessage.push(data);
             },
             alertMessageDel(state, index) {
                 state.alertMessage.splice(index, 1);
+            },
+            setMenu(state, data) {
+                state.menu = data;
             },
         },
         actions: {
@@ -59,15 +59,59 @@ const ModuleFiles = require.context('./modules', true, /(?<!index)\.js$/),
             },
             // 标签触发器
             // 用来命中菜单,添加标签
-            tabEmit({ getters, commit }, data) {
+            tabEmit({
+                getters,
+                commit,
+                dispatch,
+            }, data) {
                 // 查询对象目标字段
                 let key = 'url',
                     // 目标菜单
                     menu = R.find(R.propEq(key, data), getters.menu);
                 if (!menu) return;
+
                 // 目标标签
                 let tab = R.find(R.propEq(key, menu[key]), getters.tabs);
-                if (!tab) commit('tabPush', menu);
+                if (!tab) {
+                    dispatch('updateMenuActive', menu);
+                    commit('tabPush', menu);
+                }
+            },
+            // 删除标签
+            tabDel({
+                getters,
+                commit,
+                dispatch,
+            }, index) {
+                commit('tabDel', index);
+                // 跳转路由
+                let length = getters.tabs.length,
+                    path = '/';
+                if (length) {
+                    let menu = getters.tabs[length - 1];
+                    path = menu.url;
+                    dispatch('updateMenuActive', menu);
+                }
+                Router.push({ path });
+            },
+            // 更新菜单激活状态
+            updateMenuActive({ getters, commit }, data) {
+                let activeKey = 'active',
+                    lensProp = R.lensProp(activeKey),
+                    // 变更菜单激活状态
+                    menuList = R.compose(
+                    // 激活当前菜单父级
+                        overList(
+                            R.propEq('id', data.pid),
+                            R.over(lensProp, R.T),
+                        ),
+                        // 关闭已激活菜单
+                        overList(
+                            R.propEq(activeKey, true),
+                            R.over(lensProp, R.F),
+                        )
+                    )(getters.menu);
+                commit('setMenu', menuList);
             },
         },
         modules,

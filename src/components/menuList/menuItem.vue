@@ -1,5 +1,6 @@
 <template lang="html">
     <v-list-group v-if="value[children] && Array.isArray(value[children])"
+                  v-model="value.active"
                   :sub-group="!root"
                   class="group">
         <template v-slot:activator>
@@ -9,7 +10,7 @@
                       :key="index"
                       :value="item" />
     </v-list-group>
-    <v-list-tile v-else :to="{path: value[url]}">
+    <v-list-tile v-else :to="value[url] ? {path: value[url]} : ''">
         <v-list-tile-action class="menuIcon">
             <v-icon v-show="value[icon]">
                 iconfont {{ value[icon] }}
@@ -55,6 +56,10 @@ export default {
         },
         url() {
             return this.structure[3];
+        },
+        path() {
+            let path = this.value[this.url];
+            return path === false ? path : { path };
         },
         // 不含有子集的数据
         noHasChildren() {
