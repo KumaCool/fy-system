@@ -2,7 +2,7 @@ import { api } from '@/api';
 import Router from '@/router';
 let state = {
     token: localStorage.getItem('token') || '',
-    userInfo: localStorage.getItem('userInfo') || null,
+    userInfo: JSON.parse(localStorage.getItem('userInfo')) || null,
 };
 const getters = {
         token: state => state.token,
@@ -15,7 +15,7 @@ const getters = {
         },
         setUserInfo(state, data) {
             state.userInfo = data;
-            localStorage.setItem('userInfo', data);
+            localStorage.setItem('userInfo', JSON.stringify(data));
         },
         // 退出登陆
         signOut(state) {
