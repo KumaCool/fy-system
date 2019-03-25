@@ -7,6 +7,14 @@
                           flex-row
                           :data="selectData"
                           :forms="selectForms">
+                <selector-city v-if="selectedMore"
+                               v-model="selectData.startPlace"
+                               item-value="label"
+                               outline />
+                <selector-city v-if="selectedMore"
+                               v-model="selectData.endPlace"
+                               item-value="label"
+                               outline />
                 <div class="d-flex dateRange">
                     <date-picker v-model="selectData.searchAircraftStartTime"
                                  clearable
@@ -25,6 +33,12 @@
                                  clearable
                                  :allowed-dates="allowedDates(selectData.searchAppointmentStartTime)" />
                 </div>
+                <v-select v-model="selectData.trafficOrderId"
+                          :items="payType"
+                          item-text="label"
+                          item-value="value"
+                          clearable
+                          outline />
                 <v-spacer />
                 <v-btn-toggle v-model="selectData.searchTicketType" class="ticketType">
                     <v-btn flat value="air">
@@ -107,11 +121,15 @@ import { mapGetters, mapActions } from 'vuex';
 import { relationDate } from '_js/getters';
 import { objSplit } from '_js/mutations';
 import SelectForms from '~/ui/forms/selectForms';
+import SelectorCity from '~/selectorCity';
 
 import pageMixin from '@/mixins/page';
 export default {
     name: 'ExpenseSheet',
-    components: { SelectForms },
+    components: {
+        SelectForms,
+        SelectorCity,
+    },
     mixins: [pageMixin],
     data() {
         return {
@@ -144,16 +162,16 @@ export default {
                     ['searchIdCard', '证件号码'],
                     ['trafficNumber', '航班号'],
                     ['pnr', 'PNR号'],
-                    ['startPlace', '出发城市'],
-                    ['endPlace', '抵达城市'],
+                    ['__', '出发城市'],
+                    ['__', '抵达城市'],
                     ['__', '起飞时间'],
-                    ['trafficOrderId', '订单状态'],
+                    ['__', '订单状态'],
                     ['__', '预定时间'],
                 ]
                 : [
                     ['userName', '乘机人'],
                     ['__', '起飞时间'],
-                    ['trafficOrderId', '订单状态'],
+                    ['__', '订单状态'],
                 ];
         },
         dataListHeader() {
@@ -194,7 +212,7 @@ export default {
                 );
             return R.map(fn, this.dataList);
         },
-        ...mapGetters('storeDictionary', ['findDic']),
+        ...mapGetters('storeDictionary', ['payType', 'findDic']),
     },
     created() {
         this.getData();
