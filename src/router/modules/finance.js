@@ -6,6 +6,12 @@ export default [
         component: Home,
         children: [
             {
+                // 对账单列表
+                path: 'checkBill',
+                name: 'checkBill',
+                component: () => import('@/views/finance/checkBill'),
+            },
+            {
                 // 消费记录
                 path: 'expenseSheet',
                 name: 'expenseSheet',
