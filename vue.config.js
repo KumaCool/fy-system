@@ -6,6 +6,7 @@ function resolve(dir = '') {
 }
 
 module.exports = {
+    publicPath: './',
     css: { loaderOptions: { stylus: { import: ['var', 'color'].map(v => resolve(`src/assets/css/${v}.styl`)) } } },
     chainWebpack: config => {
         config.resolve.alias.set('#', resolve());
