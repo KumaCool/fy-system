@@ -11,15 +11,16 @@
                           :items="gender"
                           item-text="label"
                           item-value="value"
+                          clearable
                           outline />
                 <v-select v-model="selectData.qType"
                           :items="cardType"
                           item-text="label"
                           item-value="value"
+                          clearable
                           outline />
                 <v-spacer />
                 <v-btn block
-                       small
                        color="warning"
                        @click="getData">
                     <v-icon left small>
@@ -117,12 +118,12 @@
             <v-btn color="warning" @click="showUserForm">
                 添加员工
             </v-btn>
-            <v-btn color="warning">
+            <v-btn color="warning" @click="download">
                 下载模板
             </v-btn>
-            <v-btn color="warning">
+            <upload color="warning" @change="uploadFile">
                 导入用户表
-            </v-btn>
+            </upload>
         </v-flex>
         <v-flex shrink>
             <pages v-model="page"
@@ -135,6 +136,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 import SelectForms from '~/ui/forms/selectForms';
+import Upload from '~/ui/forms/upload';
 import UserForm from './userForm';
 
 import pageMixin from '@/mixins/page';
@@ -142,6 +144,7 @@ export default {
     name: 'UserList',
     components: {
         SelectForms,
+        Upload,
         UserForm,
     },
     mixins: [pageMixin],
@@ -170,7 +173,11 @@ export default {
             return [
                 ['qUserName', '姓名'],
                 ['__', '性别'],
-                ['qAge', '年龄'],
+                [
+                    'qAge',
+                    '年龄',
+                    { attrs: { type: 'number' } },
+                ],
                 ['qIdCrad', '证件号码'],
                 ['__', '证件类型'],
             ];
@@ -217,6 +224,13 @@ export default {
             this.userForm = value || {};
             this.dialog = true;
         },
+        // 上传文件
+        uploadFile(v) {
+            return this.importUserFile(v);
+        },
+        download() {
+            window.open('http://qiniu.oatalk.cn/userTemplate.xls');
+        },
         // 获取列表数据
         getData() {
             let post = {
@@ -236,6 +250,7 @@ export default {
             return this[api](post);
         },
         ...mapActions('storeUser', [
+            'importUserFile',
             'getUserList',
             'addUser',
             'resetPassword',

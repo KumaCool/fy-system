@@ -43,6 +43,10 @@ const getters = {
         emitPhoneCode(context, data) {
             return api.user.emitPhoneCode(data);
         },
+        // 导入用户文件
+        importUserFile(context, data) {
+            return api.user.importUserFile(data);
+        },
         // 获取用户列表
         getUserList(context, data) {
             return api.user.getUserList(data);
