@@ -62,11 +62,11 @@ const getters = {
             return api.user.updateUser(post);
         },
         // 重置用户密码
-        resetPassword(context, userId) {
+        resetPassword({ dispatch }, userId) {
             return api.user.updateUser({
                 userId,
                 handleState: 3,
-            });
+            }).then(() => dispatch('alertMessage', '重置密码成功!', { root: true }));
         },
         // 切换用户的单独购票状态
         changeBuyState(context, userId) {

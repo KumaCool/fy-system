@@ -60,7 +60,7 @@ const ModuleFiles = require.context('./modules', true, /(?<!index)\.js$/),
                 if (typeof data === 'string') data = { content: data };
                 let msg = {
                         top: true,
-                        color: 'info',
+                        color: 'success',
                         timeout: 6000,
                         content: '',
                         ...data,

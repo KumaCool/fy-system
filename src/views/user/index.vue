@@ -83,7 +83,8 @@
                         </v-edit-dialog>
                     </td>
                     <td class="actions">
-                        <v-btn fab
+                        <v-btn v-tooltip="'重置密码'"
+                               fab
                                small
                                color="info"
                                @click="resetPassword(props.item.userId)">
@@ -91,10 +92,13 @@
                                 iconfont icon-reset
                             </v-icon>
                         </v-btn>
-                        <v-btn fab
+                        <v-btn v-tooltip="'删除用户'"
+                               fab
                                small
                                color="error"
-                               @click="delUser(props.item.userId)">
+                               :loading="iconLoading[props.item.userId]"
+                               :disabled="iconLoading[props.item.userId]"
+                               @click="toDelUser(props.item.userId)">
                             <v-icon>
                                 iconfont icon-delete
                             </v-icon>
@@ -115,13 +119,17 @@
             </title-dialog>
         </v-flex>
         <v-flex grow>
-            <v-btn color="warning" @click="showUserForm">
-                添加员工
+            <v-btn color="warning"
+                   @click="showUserForm">
+                添加员工 +
             </v-btn>
             <v-btn color="warning" @click="download">
                 下载模板
             </v-btn>
             <upload color="warning" @change="uploadFile">
+                <v-icon left small>
+                    iconfont icon-import
+                </v-icon>
                 导入用户表
             </upload>
         </v-flex>
@@ -166,6 +174,8 @@ export default {
             dialog: false,
             // 弹窗类型: 0添加, 修改
             dialogType: 0,
+            // 图标加载状态: 删除按钮
+            iconLoading: {},
         };
     },
     computed: {
@@ -239,6 +249,10 @@ export default {
             };
             this.loading = true;
             return this.getUserList(post).then(res => {
+                // 增加按钮加载状态
+                res.list.forEach(v => {
+                    this.iconLoading[v.userId] = false;
+                });
                 this.userList = res.list;
                 this.setPage(res.totalPage, res.totalCount);
             });
@@ -247,7 +261,17 @@ export default {
         onSubmit(post) {
             const api = this.dialogType ? 'updateUser' : 'addUser';
             post.idCrads = JSON.stringify(post.idCrads);
-            return this[api](post);
+            return this[api](post).then(() => {
+                this.dialog = false;
+                this.getData();
+            });
+        },
+        toDelUser(id) {
+            this.iconLoading[id] = true;
+            this.delUser(id).then(() => {
+                this.iconLoading[id] = false;
+                this.getData();
+            });
         },
         ...mapActions('storeUser', [
             'importUserFile',
