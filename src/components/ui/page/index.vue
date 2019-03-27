@@ -25,7 +25,7 @@ export default createHOC(VPagination, {
         background $_color_white
         .v-pagination__navigation
         .v-pagination__item
-            size(28px)
+            size(28px, 'height')
             min-width 28px
             background $_color_background_page
             shadow(none)
