@@ -17,7 +17,7 @@ export const isLength = v => R.compose(
     v => v.length
 );
 
-// 空判断取反
+// 非空判断
 // notEmpty:: a -> Boolean
 export const notEmpty = R.complement(R.either(R.isNil, R.isEmpty));
 
@@ -41,3 +41,11 @@ export const relationDate = R.curry((startDate, endDate) => {
     if (startTime === endTime) return 0;
     return startTime > endTime ? 1 : -1;
 });
+
+// 获取元素偏移值
+// getOffset:: Document a -> {b}
+export const getOffset = el => {
+    let value = R.pick(['offsetLeft', 'offsetTop'], el),
+        parent = el.offsetParent;
+    return parent ? R.mergeWith(R.add, value, getOffset(parent)) : value;
+};
