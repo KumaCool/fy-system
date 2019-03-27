@@ -54,7 +54,7 @@
                         </v-btn>
                         <v-btn color="info"
                                small
-                               @click="downloadCheckBillFile(props.item.id)">
+                               @click="downloadCheckBillFile({id: props.item.id, code: props.item.steitmentCode})">
                             下载
                         </v-btn>
                     </td>
@@ -65,8 +65,7 @@
                           render-every
                           title="对账单详情"
                           transition="dialog-transition">
-                <check-bill-info :value="billId"
-                                 :total-amount="totalAmount"
+                <check-bill-info :value="bill"
                                  @close="dialog = false" />
             </title-dialog>
         </v-flex>
@@ -107,10 +106,8 @@ export default {
             dataList: [],
             // 弹窗
             dialog: false,
-            // 详情ID
-            billId: '',
-            // 详情合计价
-            totalAmount: 0,
+            // 详情
+            bill: '',
         };
     },
     computed: {
@@ -173,9 +170,8 @@ export default {
             if (rel(this.selectData[key]) > 0) this.selectData[key] = '';
         },
         // 显示详情
-        showBillInfo({ id, totalAmount }) {
-            this.billId = id;
-            this.totalAmount = totalAmount;
+        showBillInfo(v) {
+            this.bill = v;
             this.dialog = true;
         },
         getData() {

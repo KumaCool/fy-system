@@ -1,4 +1,5 @@
 import { api } from '@/api';
+import { base64ToBlob, fileSave } from '_js/mutations';
 
 let state = {};
 const getters = {},
@@ -13,8 +14,10 @@ const getters = {},
             return api.finance.getCheckBillInfo(data);
         },
         // 下载对账单文件
-        downloadCheckBillFile(context, data) {
-            return api.finance.downloadCheckBillFile(data);
+        downloadCheckBillFile(context, { id, code }) {
+            return api.finance.downloadCheckBillFile(id).then(res => {
+                return fileSave(code + '.xls', base64ToBlob(res));
+            });
         },
         // 获取消费记录
         getExpenseSheet(context, data) {

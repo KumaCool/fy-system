@@ -45,10 +45,10 @@ export default {
     ],
     // 下载对账单文件
     downloadCheckBillFile: [
-        'skipRequest',
+        'skipRequestDownload',
         steitmentIdList => {
             let data = {
-                steitmentIdList,
+                steitmentIdList: [steitmentIdList],
                 commandDTO,
             };
             return {
@@ -56,6 +56,11 @@ export default {
                 uri: '/fy/finance/steitment/loadExcelBySteitmentId',
             };
         },
+        res => {
+            // 完善返回数据完整base64格式
+            return 'data:application/vnd.ms-excel;base64,' + res;
+        },
+        { interceptorsResponse: false },
     ],
     // 获取消费记录
     getExpenseSheet: ['trip_account/queryTripAccountByCondition'],

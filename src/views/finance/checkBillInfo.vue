@@ -1,7 +1,7 @@
 <template lang="html">
     <v-layout column>
         <v-flex shrink>
-            合计：{{ totalAmount }}
+            合计：{{ value.totalAmount }}
         </v-flex>
         <v-flex grow>
             <list-table class="table"
@@ -52,10 +52,6 @@ export default {
     name: 'CheckBillInfo',
     mixins: [pageMixin],
     props: {
-        totalAmount: {
-            type: Number,
-            default: 0,
-        },
         value: {
             type: Number,
             required: true,
@@ -101,7 +97,13 @@ export default {
     },
     methods: {
         // 下载
-        download() {},
+        download() {
+            let post = {
+                id: this.value.id,
+                code: this.value.steitmentCode,
+            };
+            this.downloadCheckBillFile(post);
+        },
         close() {
             return this.$emit('close');
         },
@@ -112,14 +114,14 @@ export default {
                         currentPage,
                         pageSize,
                     },
-                    steitmentId: this.value,
+                    steitmentId: this.value.id,
                 };
             return this.getCheckBillInfo(post).then(res => {
                 this.dataList = res.list;
                 this.setPage(res.totalPage);
             });
         },
-        ...mapActions('storeFinance', ['getCheckBillInfo']),
+        ...mapActions('storeFinance', ['getCheckBillInfo', 'downloadCheckBillFile']),
     },
 };
 </script>
