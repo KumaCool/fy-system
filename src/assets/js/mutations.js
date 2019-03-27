@@ -20,3 +20,27 @@ export const overList = R.curry((lens, fn, list) => {
         R.remove(index, 1),
     )(list);
 });
+
+// base64转为Blob
+export const base64ToBlob = dataurl => {
+    let arr = dataurl.split(','),
+        // 文件头格式
+        mime = arr[0].match(/:(.*?);/)[1],
+        bstr = atob(arr[1]),
+        n = bstr.length,
+        u8arr = new Uint8Array(n);
+    while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new Blob([u8arr], { type: mime });
+};
+
+// 保存文件到本地
+// fileSave:: s -> Blob a -> s
+export const fileSave = R.curry((fileName, data) => {
+    let a = document.createElement('a');
+    a.download = fileName;
+    a.href = window.URL.createObjectURL(data);
+    a.click();
+    return fileName;
+});
