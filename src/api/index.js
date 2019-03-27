@@ -1,6 +1,5 @@
 import qs from 'qs';
 import Axios from 'axios';
-import Router from '@/router';
 import Store from '@/store';
 import Import from '_js/import';
 import whileList from './whileList';
@@ -28,8 +27,12 @@ Instance.interceptors.request.use(request => {
 
 // 返回拦截
 Instance.interceptors.response.use(response => {
-    let data = response.data;
-    if (whileList.code.indexOf(data.code) >= 0 || whileList.url.indexOf(Router.currentRoute.path) >= 0) {
+    let data = response.data,
+        url = response.config.url.replace(response.config.baseURL + '/', '');
+    // 判断是否拦截处理
+    if (response.config.interceptorsResponse === false) {
+        return data;
+    } else if (whileList.code.indexOf(data.code) >= 0 || whileList.url.indexOf(url) >= 0) {
         return data.result;
     } else return errorHandle(data);
 }, err => errorHandle(err));
