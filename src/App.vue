@@ -7,6 +7,13 @@
                        v-bind="item">
             {{ item.content }}
         </alert-message>
+        <v-tooltip v-model="tooltip.show"
+                   v-bind="tooltip.attrs"
+                   :activator="tooltip.activator"
+                   :position-x="tooltip.x"
+                   :position-y="tooltip.y">
+            <span>{{ tooltip.content }}</span>
+        </v-tooltip>
     </v-app>
 </template>
 
@@ -15,6 +22,6 @@ import { mapGetters } from 'vuex';
 
 export default {
     name: 'App',
-    computed: { ...mapGetters(['alertMessage']) },
+    computed: { ...mapGetters(['alertMessage', 'tooltip']) },
 };
 </script>

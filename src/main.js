@@ -3,6 +3,7 @@ import '@/plugins/vuetify';
 import router from '@/router';
 import store from '@/store';
 import Components from '~/';
+import '@/plugins';
 import '_css/global.styl';
 import App from '@/App.vue';
 

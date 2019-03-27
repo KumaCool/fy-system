@@ -14,12 +14,21 @@ const ModuleFiles = require.context('./modules', true, /(?<!index)\.js$/),
             tabs: [],
             // 提示消息
             alertMessage: [],
+            // 浮层提示消息
+            tooltip: {
+                show: false,
+                x: null,
+                y: null,
+                content: '',
+                attrs: { bottom: true },
+            },
             // 菜单
             menu: menus,
         },
         getters: {
             tabs: state => state.tabs,
             alertMessage: state => state.alertMessage,
+            tooltip: state => state.tooltip,
             menu: state => state.menu,
         },
         mutations: {
@@ -34,6 +43,13 @@ const ModuleFiles = require.context('./modules', true, /(?<!index)\.js$/),
             },
             alertMessageDel(state, index) {
                 state.alertMessage.splice(index, 1);
+            },
+            setTooltip(state, data) {
+                state.tooltip = R.mergeDeepRight(state.tooltip, data);
+            },
+            // 清空浮层提示数据
+            hideTooltip(state) {
+                state.tooltip.show = false;
             },
             setMenu(state, data) {
                 state.menu = data;
