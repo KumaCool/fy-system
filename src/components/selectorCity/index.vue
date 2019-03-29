@@ -2,14 +2,14 @@
     <v-autocomplete ref="selectorCity"
                     :items="dataList"
                     :search-input.sync="query"
-                    item-text="label"
-                    :item-value="itemValue"
+                    :item-text="itemKey.label"
+                    :item-value="itemKey.value"
                     no-filter
                     v-bind="$attrs"
                     v-on="$listeners"
                     @blur="autoSetValue">
         <template v-slot:no-data>
-            <v-card flat>
+            <v-card flat :max-width="470">
                 <div>
                     <v-btn v-for="(item, index) in history"
                            :key="index"
@@ -21,13 +21,13 @@
                 </div>
                 <v-subheader>热门城市</v-subheader>
                 <div>
-                    <v-btn v-for="(item, index) in trainHotCity"
+                    <v-btn v-for="(item, index) in hotCity"
                            :key="index"
                            flat
                            small
                            color="primary"
                            @click="buttonSetValue(item)">
-                        {{ item.label }}
+                        {{ item[itemKey.label] }}
                     </v-btn>
                 </div>
             </v-card>
@@ -36,7 +36,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 export default {
     name: 'SelectorCity',
     data() {
@@ -46,21 +46,24 @@ export default {
             query: '',
             // 历史记录
             history: [],
+            timeout: null,
         };
     },
     computed: {
-        itemValue() {
-            return this.$attrs['item-value'] || 'pinyin';
+        itemKey() {
+            return {
+                label: this.$attrs['item-text'] || 'name',
+                value: this.$attrs['item-value'] || 'id',
+            };
         },
-        ...mapGetters('storeDictionary', [
-            'trainDic',
-            'getTrain',
-            'trainHotCity',
-        ]),
+        ...mapGetters('storeDictionary', ['hotCity']),
     },
     watch: {
         query(v) {
-            if (v) return this.select(v);
+            if (v) {
+                clearTimeout(this.timeout);
+                this.timeout = setTimeout(() => this.select(v), 1000);
+            }
             this.dataList = [];
         },
     },
@@ -68,7 +71,7 @@ export default {
         // 自动赋值
         autoSetValue() {
             if (this.dataList.length !== 1) return;
-            let getValue = R.compose(R.prop(this.itemValue), R.head);
+            let getValue = R.compose(R.prop(this.itemKey.value), R.head);
             this.setValue(getValue(this.dataList));
         },
         setValue(v) {
@@ -76,13 +79,16 @@ export default {
         },
         // 查询数据
         select(v) {
-            this.dataList = this.getTrain(v);
+            return this.queryCity(v).then(res => {
+                this.dataList = res;
+            });
         },
         // 通过按钮选中值
         buttonSetValue(obj) {
             this.dataList = [obj];
             this.autoSetValue();
         },
+        ...mapActions('storeDictionary', ['queryCity']),
     },
 };
 </script>

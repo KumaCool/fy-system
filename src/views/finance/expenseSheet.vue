@@ -9,11 +9,9 @@
                           :forms="selectForms">
                 <selector-city v-if="selectedMore"
                                v-model="selectData.startPlace"
-                               item-value="label"
                                outline />
                 <selector-city v-if="selectedMore"
                                v-model="selectData.endPlace"
-                               item-value="label"
                                outline />
                 <div class="d-flex dateRange">
                     <date-picker v-model="selectData.searchAircraftStartTime"
@@ -158,7 +156,7 @@ export default {
             return this.selectedMore
                 ? [
                     ['ticketNo', '票号'],
-                    ['userName', '乘机人'],
+                    ['userName', '出行人'],
                     ['searchIdCard', '证件号码'],
                     ['trafficNumber', '航班号'],
                     ['pnr', 'PNR号'],
@@ -169,7 +167,7 @@ export default {
                     ['__', '预定时间'],
                 ]
                 : [
-                    ['userName', '乘机人'],
+                    ['userName', '出行人'],
                     ['__', '起飞时间'],
                     ['__', '订单状态'],
                 ];
@@ -186,7 +184,7 @@ export default {
                     ['出发地', 'startPlace'],
                     ['目的地', 'endPlace'],
                     ['预定时间', 'createTime'],
-                    ['乘机人', 'userName'],
+                    ['出行人', 'userName'],
                     ['PNR', 'pnr'],
                     ['票号', 'ticketNo'],
                     ['票状态', 'trafficOrderState'],
