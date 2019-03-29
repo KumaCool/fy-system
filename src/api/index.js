@@ -4,6 +4,8 @@ import Store from '@/store';
 import Import from '_js/import';
 import whileList from './whileList';
 
+// 撤销请求集
+let source = new Map();
 // API模块: APIData
 const ModuleFiles = require.context('./modules', true, /(?<!index)\.js$/),
     Modules = Import(ModuleFiles, false),
@@ -38,67 +40,84 @@ Instance.interceptors.response.use(response => {
 }, err => errorHandle(err));
 
 const errorHandle = err => {
-    let message = {};
-    if (err.response) {
-        message.title = err.response.data.status;
-        message.context = err.response.data.message;
-        // 用户登陆超时
-        if (err.response.data.exception && err.response.data.exception.search(/HjlLoginException$/) >= 0) {
-            Store.commit('storeUser/signOut');
-        }
-    } else if (err.code) {
-        message.title = err.code;
-        message.context = err.msg;
-    } else if (err.request) {
-        message.title = '网络错误';
-        message.context = err.message;
-    } else if (err.message) {
-        message.title = '接口请求前报错';
-        message.context = err.message;
+        // 过滤撤销请求
+        if (Axios.isCancel(err)) return Promise.reject();
+        let message = {};
+        if (err.response) {
+            message.title = err.response.data.status;
+            message.context = err.response.data.message;
+            // 用户登陆超时
+            if (err.response.data.exception && err.response.data.exception.search(/HjlLoginException$/) >= 0) {
+                Store.commit('storeUser/signOut');
+            }
+        } else if (err.code) {
+            message.title = err.code;
+            message.context = err.msg;
+        } else if (err.request) {
+            message.title = '网络错误';
+            message.context = err.message;
+        } else if (err.message) {
+            message.title = '接口请求前报错';
+            message.context = err.message;
         // eslint-disable-next-line
     } else console.dir(err);
-    Store.dispatch('alertMessage', {
-        color: 'error',
-        content: `${message.title}: ${message.context}`,
-    });
-    return Promise.reject(message);
-};
+        Store.dispatch('alertMessage', {
+            color: 'error',
+            content: `${message.title}: ${message.context}`,
+        });
+        return Promise.reject(message);
+    },
+    // 标准化API
+    // formatArg2API:: APIData Array -> Array
+    formatArg2API = api => {
+        if (typeof api[0] !== 'string') throw new Error('API格式错误,首个元素必须为字符串');
+        // 注意: 该对象顺序会影响其它函数
+        let data = {
+                type: 'post',
+                response: v => v,
+                url: api[0],
+                request: v => v,
+                config: {},
+            },
+            keySelector = (v, i) => {
+                return R.cond([
+                    [R.allPass([R.is(Function), R.always(R.equals(1, i))]), R.always('response')],
+                    [R.is(Function), R.always('request')],
+                    [R.is(String), R.always('type')],
+                    [R.is(Object), R.always('config')],
+                ])(v);
+            };
+        R.tail(api).forEach((v, i) => {
+            let key = keySelector(v, i);
+            if (key) data[key] = v;
+        });
+        return R.values(data);
+    },
+    CancelToken = Axios.CancelToken,
+    // 封装Axios
+    toAxios = (type, response, ...args) => {
+        // 添加Token
+        if (Store.getters['storeUser/token']) {
+            Instance.defaults.headers.common['Authorization'] = Store.getters['storeUser/token'];
+        }
+        // 有取消请求设置时处理
+        let config = R.last(args),
+            url = R.head(args),
+            cancel;
+        if (config.cancelToken) {
+            config.cancelToken = new CancelToken(c => {
+                cancel = c;
+            });
+            args[args.length - 1] = config;
+        }
+        if (source.get(url)) source.get(url)();
+        source.set(url, cancel);
+        return R.apply(Instance[type], args).then(res => {
+            source.delete(url);
+            return response(res);
+        });
+    };
 
-// 标准化API
-// formatArg2API:: APIData Array -> Array
-const formatArg2API = api => {
-    if (typeof api[0] !== 'string') throw new Error('API格式错误,首个元素必须为字符串');
-    // 注意: 该对象顺序会影响其它函数
-    let data = {
-            type: 'post',
-            response: v => v,
-            url: api[0],
-            request: v => v,
-            config: {},
-        },
-        keySelector = (v, i) => {
-            return R.cond([
-                [R.allPass([R.is(Function), R.always(R.equals(1, i))]), R.always('response')],
-                [R.is(Function), R.always('request')],
-                [R.is(String), R.always('type')],
-                [R.is(Object), R.always('config')],
-            ])(v);
-        };
-    R.tail(api).forEach((v, i) => {
-        let key = keySelector(v, i);
-        if (key) data[key] = v;
-    });
-    return R.values(data);
-};
-
-// 封装Axios
-const toAxios = (type, response, ...args) => {
-    // 添加Token
-    if (Store.getters['storeUser/token']) {
-        Instance.defaults.headers.common['Authorization'] = Store.getters['storeUser/token'];
-    }
-    return R.apply(Instance[type], args).then(response);
-};
 // 封装API模块
 // XXX: 函数式不优雅,待优化
 let formatAPI = R.map(
