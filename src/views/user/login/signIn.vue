@@ -104,6 +104,7 @@ export default {
         // 切换验证码登陆
         changePhoneCode() {
             this.isPhoneCode = !this.isPhoneCode;
+            this.formData.password = '';
             this.resetRule();
         },
         // 重置校验
