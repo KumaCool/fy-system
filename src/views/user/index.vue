@@ -187,7 +187,10 @@ export default {
                 [
                     'qAge',
                     '年龄',
-                    { attrs: { type: 'number' } },
+                    {
+                        attrs: { type: 'number' },
+                        on: { change: this.formatAge },
+                    },
                 ],
                 ['qIdCrad', '证件号码'],
                 ['__', '证件类型'],
@@ -228,6 +231,12 @@ export default {
         this.getData();
     },
     methods: {
+        // 格式化年龄
+        formatAge(v) {
+            if (v === '') return;
+            let value = Number(v);
+            this.selectData.qAge = value < 0 || isNaN(value) ? 0 : value;
+        },
         // 显示用户表单弹层: 有值是修改
         showUserForm(value = null) {
             if (value instanceof MouseEvent) value = null;

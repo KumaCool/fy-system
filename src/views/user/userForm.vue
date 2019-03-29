@@ -52,6 +52,7 @@ export default {
         show: Boolean,
     },
     data() {
+        const _self = this;
         return {
             formData: {
                 loginName: '',
@@ -81,7 +82,14 @@ export default {
                     [required],
                 ],
                 ['__', '性别'],
-                ['age', '年龄'],
+                [
+                    'age',
+                    '年龄',
+                    {
+                        attrs: { type: 'number' },
+                        on: { change: _self.formatAge },
+                    },
+                ],
             ],
             formOption: { props: { outline: true } },
             layout: { attrs: { wrap: true } },
@@ -119,6 +127,12 @@ export default {
         this.addCard();
     },
     methods: {
+        // 格式化年龄
+        formatAge(v) {
+            if (v === '') return;
+            let value = Number(v);
+            this.formData.age = value < 0 || isNaN(value) ? 0 : value;
+        },
         // 增加证件组配置
         addCard() {
             let i = this.cardCount,
