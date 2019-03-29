@@ -143,6 +143,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import { changeKey } from '_js/mutations';
 import SelectForms from '~/ui/forms/selectForms';
 import Upload from '~/ui/forms/upload';
 import UserForm from './userForm';
@@ -261,6 +262,10 @@ export default {
         onSubmit(post) {
             const api = this.dialogType ? 'updateUser' : 'addUser';
             post.idCrads = JSON.stringify(post.idCrads);
+            post = R.compose(
+                changeKey('idCradList', 'idCrads'),
+                R.over(R.lensProp('idCradList'), JSON.stringify)
+            )(post);
             return this[api](post).then(() => {
                 this.dialog = false;
                 this.getData();
