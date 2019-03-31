@@ -69,8 +69,9 @@
                                     </v-tab>
                                     <v-tabs-items class="tabsMain">
                                         <keep-alive include="">
-                                            <router-view />
+                                            <router-view v-if="$route.meta.keepAlive" />
                                         </keep-alive>
+                                        <router-view v-if="!$route.meta.keepAlive" />
                                     </v-tabs-items>
                                 </v-tabs>
                             </v-content>
