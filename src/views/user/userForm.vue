@@ -5,7 +5,8 @@
                 :forms="forms"
                 :form-option="formOption"
                 layout-column
-                flex-row>
+                flex-row
+                @submit.prevent="onSubmit">
         <v-select v-model="formData.gender"
                   :items="gender"
                   item-text="label"
@@ -24,7 +25,7 @@
             新增证件+
         </div>
         <div class="buttom">
-            <v-btn color="warning" @click="onSubmit">
+            <v-btn color="warning" type="submit">
                 确认
             </v-btn>
             <v-btn color="warning" @click="close">

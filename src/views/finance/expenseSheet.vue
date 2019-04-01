@@ -6,7 +6,8 @@
             <select-forms class="select"
                           flex-row
                           :data="selectData"
-                          :forms="selectForms">
+                          :forms="selectForms"
+                          @submit.prevent="getData">
                 <selector-city v-if="selectedMore"
                                v-model="selectData.startPlace"
                                outline />
@@ -53,7 +54,7 @@
                 </v-btn>
                 <v-btn block
                        color="warning"
-                       @click="getData">
+                       type="submit">
                     <v-icon left small>
                         iconfont icon-search
                     </v-icon>

@@ -110,7 +110,7 @@ export default createHOC(VForm, {
         return h(VForm, {
             props: this.$props,
             attrs: this.$attrs,
-            on: this.$listener,
+            on: this.$listeners,
         }, [container(forms.concat(defaultSlots))]);
     },
 });

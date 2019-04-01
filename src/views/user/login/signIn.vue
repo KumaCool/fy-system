@@ -5,7 +5,8 @@
                 :data="formData"
                 :forms="forms"
                 :form-option="formOption"
-                layout-column>
+                layout-column
+                @submit.prevent="onSubmit">
         <v-text-field v-model="formData.password"
                       name="password"
                       :type="isPhoneCode ? 'text' : 'password'"
@@ -31,7 +32,7 @@
         <v-btn block
                large
                color="info"
-               @click="onSubmit">
+               type="submit">
             登陆
         </v-btn>
     </auto-forms>

@@ -36,8 +36,12 @@ const getters = {
             });
         },
         // 修改用户密码
-        updateUserPassword(context, data) {
-            return api.user.updateUserPassword(data).then();
+        updateUserPassword({ dispatch }, data) {
+            return api.user.updateUserPassword(data)
+                .then(() => {
+                    dispatch('alertMessage', '修改密码成功!', { root: true });
+                    Router.push({ path: 'login' });
+                });
         },
         // 发送验证码
         emitPhoneCode(context, data) {

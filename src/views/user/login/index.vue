@@ -60,6 +60,8 @@ h1
     align-items baseline
     fs()
         font-size 48px
+    span:not(.zTitle)
+        font-size 24px
     .zTitle
         color $_color_primary
         fs()

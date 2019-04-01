@@ -5,7 +5,8 @@
                 :forms="forms"
                 :form-option="formOption"
                 :container="container"
-                layout-column>
+                layout-column
+                @submit.prevent="onSubmit">
         <v-text-field ref="code"
                       v-model="formData.code"
                       name="code"
@@ -22,8 +23,8 @@
         <v-btn block
                large
                color="info"
-               @click="onSubmit">
-            登陆
+               type="submit">
+            修改密码
         </v-btn>
     </auto-forms>
 </template>
@@ -43,7 +44,7 @@ export default {
         return {
             formData: {
                 mobile: '',
-                password: '',
+                pwd: '',
                 code: '',
             },
             forms: [
@@ -53,7 +54,7 @@ export default {
                     [mobileCN],
                 ],
                 [
-                    'password',
+                    'pwd',
                     '新密码',
                     { props: { type: 'password' } },
                     [

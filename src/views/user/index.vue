@@ -6,7 +6,8 @@
             <select-forms class="select"
                           flex-row
                           :data="selectData"
-                          :forms="selectForms">
+                          :forms="selectForms"
+                          @submit.prevent="getData">
                 <v-select v-model="selectData.qGender"
                           :items="gender"
                           item-text="label"
@@ -22,7 +23,7 @@
                 <v-spacer />
                 <v-btn block
                        color="warning"
-                       @click="getData">
+                       type="submit">
                     <v-icon left small>
                         iconfont icon-search
                     </v-icon>
