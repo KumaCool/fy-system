@@ -1,13 +1,22 @@
 <template lang="html">
-    <v-menu>
+    <v-menu ref="menu"
+            v-model="show"
+            full-width
+            lazy
+            offset-y
+            max-width="290px"
+            min-width="290px"
+            :nudge-right="40"
+            :close-on-content-click="false">
         <template v-slot:activator="{on}">
             <v-text-field v-bind="inputAttrsObj"
                           :value="value"
-                          v-on="{...on, ...inputListeners}"
-                          @input="change" />
+                          v-on="{...on, ...inputListeners}" />
         </template>
         <v-date-picker v-bind="attrs"
-                       v-on="$listeners" />
+                       scrollable
+                       v-on="$listeners"
+                       @change="change" />
     </v-menu>
 </template>
 
@@ -36,6 +45,9 @@ export default {
             },
         },
     },
+    data() {
+        return { show: false };
+    },
     computed: {
         // 文本框属性配置
         inputAttrsObj() {
@@ -53,7 +65,7 @@ export default {
     },
     methods: {
         change(v) {
-            this.$emit('input', v || '');
+            this.$refs.menu.save(v);
         },
     },
 };
