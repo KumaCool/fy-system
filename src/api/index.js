@@ -46,13 +46,11 @@ const errorHandle = err => {
         if (err.response) {
             message.title = err.response.data.status;
             message.context = err.response.data.message;
-            // 用户登陆超时
-            if (err.response.data.exception && err.response.data.exception.search(/HjlLoginException$/) >= 0) {
-                Store.commit('storeUser/signOut');
-            }
         } else if (err.code) {
             message.title = err.code;
             message.context = err.msg;
+            // 用户登陆超时
+            if (err.code === 9003) Store.commit('storeUser/signOut');
         } else if (err.request) {
             message.title = '网络错误';
             message.context = err.message;

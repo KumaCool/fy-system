@@ -23,7 +23,7 @@ const getters = {
             state.userInfo = null;
             localStorage.setItem('token', '');
             localStorage.setItem('userInfo', null);
-            location.reload();
+            Router.push({ path: 'login' });
         },
     },
     actions = {
