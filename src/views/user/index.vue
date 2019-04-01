@@ -271,7 +271,6 @@ export default {
         // 添加/编辑用户
         onSubmit(post) {
             const api = this.dialogType ? 'updateUser' : 'addUser';
-            post.idCrads = JSON.stringify(post.idCrads);
             post = R.compose(
                 changeKey('idCradList', 'idCrads'),
                 R.over(R.lensProp('idCradList'), JSON.stringify)
@@ -281,6 +280,7 @@ export default {
                 this.getData();
             });
         },
+        // 删除用户
         toDelUser(id) {
             this.iconLoading[id] = true;
             this.delUser(id).then(() => {

@@ -23,14 +23,14 @@ export const overList = R.curry((lens, fn, list) => {
 
 // 替换对象中指定的键名
 // changeKey:: s -> String b -> {b}
-export const changeKey = (key, newKey, obj) => {
-    let values = R.value(obj),
+export const changeKey = R.curry((key, newKey, obj) => {
+    let values = R.values(obj),
         keys = R.keys(obj),
         index = keys.indexOf(key);
     if (index < 0) return obj;
     keys[index] = newKey;
     return R.zipObj(keys, values);
-};
+});
 
 // base64转为Blob
 export const base64ToBlob = dataurl => {
