@@ -36,47 +36,45 @@
                     </v-toolbar-items>
                 </v-toolbar>
             </v-flex>
-            <v-flex grow>
+            <v-flex class="flexChildFill" grow>
                 <v-layout row fill-height>
-                    <v-layout row fill-height>
-                        <v-flex shrink>
-                            <v-navigation-drawer class="nav"
-                                                 permanent
-                                                 :width="185"
-                                                 :mini-variant="miniMenu">
-                                <my-menu class="menu" :value="menuTree" />
-                            </v-navigation-drawer>
-                        </v-flex>
-                        <v-flex md12
-                                d-flex
-                                overflow-x-hidden>
-                            <v-content class="homeMain">
-                                <v-tabs class="tabs">
-                                    <v-tab v-for="(item, index) in tabs"
-                                           :key="index"
-                                           :to="{path: item.url}"
-                                           @click="updateMenuActive(item)">
-                                        {{ item.title }}
-                                        <v-btn class="close"
-                                               flat
-                                               icon
-                                               small
-                                               @click.prevent="tabDel(index)">
-                                            <v-icon small>
-                                                close
-                                            </v-icon>
-                                        </v-btn>
-                                    </v-tab>
-                                    <v-tabs-items class="tabsMain">
-                                        <keep-alive include="">
-                                            <router-view v-if="$route.meta.keepAlive" />
-                                        </keep-alive>
-                                        <router-view v-if="!$route.meta.keepAlive" />
-                                    </v-tabs-items>
-                                </v-tabs>
-                            </v-content>
-                        </v-flex>
-                    </v-layout>
+                    <v-flex shrink>
+                        <v-navigation-drawer class="nav"
+                                             permanent
+                                             :width="185"
+                                             :mini-variant="miniMenu">
+                            <my-menu class="menu" :value="menuTree" />
+                        </v-navigation-drawer>
+                    </v-flex>
+                    <v-flex md12
+                            d-flex
+                            overflow-x-hidden>
+                        <v-content class="homeMain">
+                            <v-tabs class="tabs">
+                                <v-tab v-for="(item, index) in tabs"
+                                       :key="index"
+                                       :to="{path: item.url}"
+                                       @click="updateMenuActive(item)">
+                                    {{ item.title }}
+                                    <v-btn class="close"
+                                           flat
+                                           icon
+                                           small
+                                           @click.prevent="tabDel(index)">
+                                        <v-icon small>
+                                            close
+                                        </v-icon>
+                                    </v-btn>
+                                </v-tab>
+                                <v-tabs-items class="tabsMain flexChildFill">
+                                    <keep-alive include="">
+                                        <router-view v-if="$route.meta.keepAlive" />
+                                    </keep-alive>
+                                    <router-view v-if="!$route.meta.keepAlive" />
+                                </v-tabs-items>
+                            </v-tabs>
+                        </v-content>
+                    </v-flex>
                 </v-layout>
             </v-flex>
         </v-layout>

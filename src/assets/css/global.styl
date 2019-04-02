@@ -18,6 +18,13 @@ a
     background url($_img + '/home/bg.jpg') no-repeat center
     background-size cover
 
+// flex容器下的元素填满
+.flexChildFill
+    position relative
+    & > *
+        position absolute
+        size(100%)
+
 // 转按钮样式
 .theButton
     cursor pointer
