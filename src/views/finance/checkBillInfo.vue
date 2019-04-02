@@ -6,7 +6,7 @@
         <v-flex grow>
             <list-table class="table"
                         :headers="listHeader"
-                        :items="dataList"
+                        :items="currentData"
                         :loading="dataLoading"
                         hide-actions>
                 <template v-slot:items="{item}">
@@ -30,8 +30,7 @@
         </v-flex>
         <v-flex shrink my-3>
             <pages v-model="page"
-                   :length="pageLength"
-                   @input="getData" />
+                   :length="pageLength" />
         </v-flex>
         <v-flex shrink class="buttom">
             <v-btn color="warning" @click="download">
@@ -53,7 +52,7 @@ export default {
     mixins: [pageMixin],
     props: {
         value: {
-            type: Number,
+            type: Object,
             required: true,
         },
     },
@@ -85,6 +84,12 @@ export default {
                     ['备注', 'descrip'],
                 ];
             return R.map(R.zipObj(keys), data);
+        },
+        // 当前页数据
+        currentData() {
+            let start = this.page > 1 ? (this.page - 1) * this.pageRow : 0,
+                end = this.page * this.pageRow - 1;
+            return this.dataList.slice(start, end);
         },
     },
     watch: {
