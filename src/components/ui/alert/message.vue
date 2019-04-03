@@ -5,7 +5,7 @@
         <slot />
         <v-btn v-if="close"
                icon
-               :color="attrs.color || info"
+               :color="attrs.color || 'info'"
                @click="close">
             <v-icon>close</v-icon>
         </v-btn>

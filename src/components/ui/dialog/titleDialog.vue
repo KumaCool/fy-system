@@ -9,9 +9,19 @@ export default createHOC(VDialog, {
     props: {
         title: String,
         // 内容的高
-        contentHeight: String,
+        contentHeight: [String, Number],
         // 每次弹窗渲染
         renderEvery: Boolean,
+    },
+    computed: {
+        // 格式化内容的高
+        contentHeightFormat() {
+            if (!this.contentHeight) return '';
+            return typeof this.contentHeight === 'number'
+                || !this.contentHeight.includes('px')
+                ? this.contentHeight + 'px'
+                : this.contentHeight;
+        },
     },
     render(h) {
         let props = { ...this.$props },
@@ -32,7 +42,7 @@ export default createHOC(VDialog, {
                     h(VCardTitle, this.$props.title),
                     h(
                         VCardText,
-                        { style: { height: this.$props.contentHeight } },
+                        { style: { height: this.contentHeightFormat } },
                         children
                     ),
                 ]),
