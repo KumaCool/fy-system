@@ -10,19 +10,26 @@
             :close-on-content-click="false">
         <template v-slot:activator="{on}">
             <v-text-field v-bind="inputAttrsObj"
-                          :value="value"
-                          @blur="input(value)"
+                          :value="inputValue"
+                          @blur="input(inputValue)"
                           @input="input"
                           v-on="{...on, ...inputListeners}" />
         </template>
-        <v-date-picker v-bind="attrs"
+        <v-date-picker v-if="!showTime"
+                       v-model="dateValue"
+                       v-bind="attrs"
                        scrollable
-                       v-on="$listeners"
+                       @change="toChange" />
+        <v-time-picker v-else
+                       v-model="timeValue"
+                       use-seconds
+                       v-bind="timeAttrs"
                        @change="change" />
     </v-menu>
 </template>
 
 <script>
+import { dateFormat } from '_js/mutations';
 export default {
     name: 'DatePicker',
     props: {
@@ -46,11 +53,28 @@ export default {
                 return {};
             },
         },
+        format: {
+            type: String,
+            default: 'yyyy-MM-dd hh:mm:ss',
+        },
+        time: Boolean,
     },
     data() {
-        return { show: false };
+        return {
+            show: false,
+            showTime: false,
+            dateValue: '',
+            timeValue: '',
+        };
     },
     computed: {
+        // 文本值
+        inputValue() {
+            if (!this.value) return '';
+            let value = this.dateValue + ' ' + this.timeValue;
+            return dateFormat(value, this.format);
+        },
+        // date() {},
         // 文本框属性配置
         inputAttrsObj() {
             let attrs = { clearable: this.clearable };
@@ -59,21 +83,44 @@ export default {
         // 选择器属性
         attrs() {
             let attrs = {
-                'no-title': true,
+                // 'no-title': true,
                 locale: 'zh-cn',
             };
             return R.mergeDeepLeft(this.$attrs, attrs);
         },
+        timeAttrs() {
+            return {};
+        },
+    },
+    watch: {
+        value: {
+            handler(v) {
+                this.dateFormat(v);
+            },
+            immediate: true,
+        },
     },
     methods: {
-        input(v) {
-            let d = new Date(v);
-            if (!v || d.toString() === 'Invalid Date') v = '';
-            this.$emit('input', v);
-            this.$emit('change', v);
+        // 格式化时间
+        dateFormat(v) {
+            let value = dateFormat(v, this.format);
+            if (!value) return;
+            value = value.split(' ');
+            this.dateValue = value[0];
+            this.timeValue = value[1];
         },
-        change(v) {
-            this.$refs.menu.save(v);
+        input() {
+            this.$emit('input', this.inputValue);
+            this.$emit('change', this.inputValue);
+        },
+        toChange() {
+            if (this.time) {
+                this.showTime = true;
+            } else this.change();
+        },
+        change() {
+            this.$refs.menu.save(this.inputValue);
+            this.showTime = false;
         },
     },
 };
