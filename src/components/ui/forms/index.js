@@ -36,6 +36,14 @@ export default createHOC(VForm, {
         // 应用于flex
         flexRow: Boolean,
     },
+    computed: {
+        vFormOpt() {
+            return R.mergeDeepRight(
+                { props: { outline: true } },
+                this.formOption || {}
+            );
+        },
+    },
     render(h) {
         // 占位符
         const placeholder = '__',
@@ -77,7 +85,7 @@ export default createHOC(VForm, {
                     rule = lastValue;
                 if (typeof options !== 'object') options = { attrs: { name: key } };
                 if (R.type(rule) !== 'Array') rule = [];
-                if (this.$props.formOption) options = R.mergeDeepRight(this.$props.formOption, options);
+                options = R.mergeDeepRight(this.vFormOpt, options);
                 if (this.$props.data) {
                     options = R.mergeDeepRight({
                         props: {
