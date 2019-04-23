@@ -11,6 +11,8 @@
         <template v-slot:activator="{on}">
             <v-text-field v-bind="inputAttrsObj"
                           :value="value"
+                          @blur="input(value)"
+                          @input="input"
                           v-on="{...on, ...inputListeners}" />
         </template>
         <v-date-picker v-bind="attrs"
@@ -64,6 +66,12 @@ export default {
         },
     },
     methods: {
+        input(v) {
+            let d = new Date(v);
+            if (!v || d.toString() === 'Invalid Date') v = '';
+            this.$emit('input', v);
+            this.$emit('change', v);
+        },
         change(v) {
             this.$refs.menu.save(v);
         },
