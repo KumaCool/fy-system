@@ -55,3 +55,12 @@ export const fileSave = R.curry((fileName, data) => {
     a.click();
     return fileName;
 });
+
+// 在列表中去除或添加值
+// changeList:: a -> [a] -> [] | [a]
+export const changeList = R.curry((value, list) => {
+    let index = R.findIndex(R.identical(value), list);
+    return index < 0
+        ? R.append(value, list)
+        : R.remove(index, 1, list);
+});
