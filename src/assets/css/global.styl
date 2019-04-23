@@ -36,12 +36,25 @@ a
 // 表单 > 标签单行排列方式
 .formItem.row
     display flex
-    flex-flow row wrap
+    flex-flow row
     align-items center
     .label
+        position relative
+        @extend .nowrap
         margin-right 10px
+        margin-bottom 8px
+        font-weight 400
+        &.required::before
+            position absolute
+            top 2px
+            left -8px
+            content '*'
+            color $_color_error
         & + *
             flex auto
+    .v-text-field__details
+        position absolute
+        bottom -18px
 
 // 表单
 .theme--light.v-input

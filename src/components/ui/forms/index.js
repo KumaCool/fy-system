@@ -9,6 +9,7 @@ import {
     VFlex,
     VTextField,
 } from 'vuetify/lib';
+import { required } from '_js/getters';
 
 export default createHOC(VForm, {
     name: 'AutoForms',
@@ -67,7 +68,11 @@ export default createHOC(VForm, {
                 return h(VFlex, opt, [el]);
             },
             div = (el, className) => (<div class={className}>{el}</div>),
-            template = (label, value) => flex([div(label, 'label'), div(value)]);
+            template = (label, value, isRequired) => {
+                let className = 'label';
+                if (isRequired) className += ' required';
+                return flex([div(label, className), div(value)]);
+            };
         let defaultSlots = this.$slots.default ? this.$slots.default.filter(v => !v.isComment) : [],
             forms = this.$props.forms || [];
         if (forms.length) {
@@ -82,9 +87,15 @@ export default createHOC(VForm, {
                     options = typeof lastValueDec === 'object'
                         ? lastValueDec
                         : lastValue,
-                    rule = lastValue;
+                    rule = lastValue,
+                    isRequired;
                 if (typeof options !== 'object') options = { attrs: { name: key } };
                 if (R.type(rule) !== 'Array') rule = [];
+                let requiredIndex = rule.indexOf('required');
+                if (requiredIndex >= 0) {
+                    isRequired = true;
+                    rule = R.update(requiredIndex, required, rule);
+                }
                 options = R.mergeDeepRight(this.vFormOpt, options);
                 if (this.$props.data) {
                     options = R.mergeDeepRight({
@@ -104,13 +115,11 @@ export default createHOC(VForm, {
                 if (key === placeholder) {
                     let slot = defaultSlots.shift();
                     return label
-                        ? template(label, slot)
+                        ? template(label, slot, isRequired)
                         : !slot.componentInstance
                             ? flex(slot)
                             : slot;
-                } else {
-                    return template(label, h(com, options));
-                }
+                } else return template(label, h(com, options), isRequired);
             });
         }
         // 将剩余默认插槽格式化为标准表单件
