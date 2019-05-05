@@ -67,7 +67,7 @@ export const changeList = R.curry((value, list) => {
 
 // 时间格式化
 // dateFormat:: a -> s -> s a | null
-export function dateFormat(date, fmt) {
+export const dateFormat = (date, fmt) => {
     date = new Date(date);
     if (isNaN(Date.parse(date))) return null;
     var o = {
@@ -88,4 +88,15 @@ export function dateFormat(date, fmt) {
         }
     }
     return fmt;
-}
+};
+
+// 数据格式化为
+// formatList:: a -> b -> c -> C [{b:a}]
+export const formatList = R.curry((keys, values, list) => R.map(
+    R.compose(
+        R.zipObj(keys),
+        R.values,
+        R.pick(values)
+    ),
+    list
+));
