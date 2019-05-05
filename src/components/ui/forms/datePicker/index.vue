@@ -10,7 +10,9 @@
             :close-on-content-click="false">
         <template v-slot:activator="{on}">
             <v-text-field v-bind="inputAttrsObj"
+                          readonly
                           :value="inputValue"
+                          :disabled="disabled"
                           @blur="input(inputValue)"
                           @input="input"
                           v-on="{...on, ...inputListeners}" />
@@ -33,10 +35,7 @@ import { dateFormat } from '_js/mutations';
 export default {
     name: 'DatePicker',
     props: {
-        value: {
-            type: String,
-            required: true,
-        },
+        value: { required: true },
         // 清空按钮
         clearable: Boolean,
         // 文本框属性配置
@@ -53,11 +52,17 @@ export default {
                 return {};
             },
         },
+        // 是否使用时分秒
+        time: Boolean,
+        // 时间格式化
         format: {
             type: String,
-            default: 'yyyy-MM-dd hh:mm:ss',
+            default() {
+                return this.time ? 'yyyy-MM-dd hh:mm:ss' : 'yyyy-MM-dd';
+            },
         },
-        time: Boolean,
+        // 禁用
+        disabled: Boolean,
     },
     data() {
         return {
@@ -71,8 +76,9 @@ export default {
         // 文本值
         inputValue() {
             if (!this.value) return '';
-            let value = this.dateValue + ' ' + this.timeValue;
-            return dateFormat(value, this.format);
+            let value = this.dateValue;
+            if (this.timeValue) value += ' ' + this.timeValue;
+            return dateFormat(value, this.format) || '';
         },
         // date() {},
         // 文本框属性配置
@@ -104,7 +110,11 @@ export default {
         // 格式化时间
         dateFormat(v) {
             let value = dateFormat(v, this.format);
-            if (!value) return;
+            if (!value) {
+                this.dateValue = '';
+                this.timeValue = '';
+                return;
+            }
             value = value.split(' ');
             this.dateValue = value[0];
             this.timeValue = value[1];

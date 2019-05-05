@@ -24,7 +24,7 @@ export default createHOC(VForm, {
         // 表单配置集
         // 通过对象里的'__'字段进行占位操作,可改变slots顺序
         forms: Array,
-        // 表单项项配置
+        // 表单项配置
         formOption: Object,
         // 组件配置
         container: Object,
