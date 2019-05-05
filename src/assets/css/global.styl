@@ -52,6 +52,7 @@ a
             color $_color_error
         & + *
             flex auto
+            width 0
     .v-text-field__details
         position absolute
         bottom -18px
@@ -80,6 +81,13 @@ a
             font-size 14px
         .v-label
             font-size 12px
+    // 选择器
+    &.v-select
+        .v-select__selections
+            width 0
+        .v-select__selection--comma
+            single()
+            display inline-block
 
 // 翻页按钮
 .v-pagination__item:focus
