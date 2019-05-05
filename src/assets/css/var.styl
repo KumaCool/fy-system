@@ -74,3 +74,9 @@ shadow()
                     $color = arguments[1]
                 $surplus = arguments[2]
         box-shadow $x $y $blur $spread $color $surplus
+
+// 文字单行隐藏
+single()
+    white-space nowrap
+    text-overflow ellipsis
+    overflow hidden
