@@ -13,8 +13,6 @@
                           readonly
                           :value="inputValue"
                           :disabled="disabled"
-                          @blur="input(inputValue)"
-                          @input="input"
                           v-on="{...on, ...inputListeners}" />
         </template>
         <v-date-picker v-if="!showTime"
@@ -75,12 +73,10 @@ export default {
     computed: {
         // 文本值
         inputValue() {
-            if (!this.value) return '';
             let value = this.dateValue;
             if (this.timeValue) value += ' ' + this.timeValue;
             return dateFormat(value, this.format) || '';
         },
-        // date() {},
         // 文本框属性配置
         inputAttrsObj() {
             let attrs = { clearable: this.clearable };
@@ -105,6 +101,10 @@ export default {
             },
             immediate: true,
         },
+        inputValue(v) {
+            this.$emit('input', v);
+            this.$emit('change', v);
+        },
     },
     methods: {
         // 格式化时间
@@ -118,10 +118,6 @@ export default {
             value = value.split(' ');
             this.dateValue = value[0];
             this.timeValue = value[1];
-        },
-        input() {
-            this.$emit('input', this.inputValue);
-            this.$emit('change', this.inputValue);
         },
         toChange() {
             if (this.time) {
