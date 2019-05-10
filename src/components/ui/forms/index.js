@@ -71,7 +71,7 @@ export default createHOC(VForm, {
             template = (label, value, isRequired) => {
                 let className = 'label';
                 if (isRequired) className += ' required';
-                return flex([div(label, className), div(value)]);
+                return flex([div(label, className), value]);
             };
         let defaultSlots = this.$slots.default ? this.$slots.default.filter(v => !v.isComment) : [],
             forms = this.$props.forms || [];
