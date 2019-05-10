@@ -47,7 +47,10 @@ export default {
     methods: {
         change(type, v) {
             this.$emit('update:' + type, v);
-            this.$emit('input', [this.start, this.end]);
+            let value = type === 'startDate'
+                ? [v, this.end]
+                : [this.start, v];
+            this.$emit('input', value);
         },
         // 允许操作的时间
         allowedDates(date) {
