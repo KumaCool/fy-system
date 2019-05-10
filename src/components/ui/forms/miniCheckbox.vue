@@ -23,7 +23,7 @@ export default {
                 Number,
                 Boolean,
             ],
-            required: true,
+            default: true,
         },
         label: {
             type: String,
@@ -53,7 +53,9 @@ export default {
     },
     methods: {
         change(v) {
-            let data = this.radio ? v : changeList(v, this.inputValue);
+            let data = this.radio
+                ? this.inputValue === v ? '' : v
+                : changeList(v, this.inputValue);
             this.$emit('change', data);
         },
         isChecked(v) {
