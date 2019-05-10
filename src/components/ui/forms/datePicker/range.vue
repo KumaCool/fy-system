@@ -2,11 +2,13 @@
     <div class="dateRange">
         <date-picker :value="start"
                      clearable
+                     :input-attrs="{rules, outline: true}"
                      @change="change('startDate', $event)" />
         <span class="division">至</span>
         <date-picker :value="end"
                      clearable
                      :allowed-dates="allowedDates(start)"
+                     :input-attrs="{rules, outline: true}"
                      @change="change('endDate', $event)" />
     </div>
 </template>
@@ -30,6 +32,7 @@ export default {
             type: [String, Object],
             default: '',
         },
+        rules: Array,
     },
     computed: {
         start() {
