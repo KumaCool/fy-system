@@ -33,6 +33,14 @@ a
 .nowrap
     white-space nowrap
 
+// 必填
+.required::before
+    position absolute
+    top 2px
+    left -10px
+    content '*'
+    color $_color_error
+
 // 表单 > 标签单行排列方式
 .formItem.row
     display flex
@@ -44,12 +52,6 @@ a
         margin-right 10px
         margin-bottom 8px
         font-weight 400
-        &.required::before
-            position absolute
-            top 2px
-            left -8px
-            content '*'
-            color $_color_error
         & + *
             flex auto
             width 0
