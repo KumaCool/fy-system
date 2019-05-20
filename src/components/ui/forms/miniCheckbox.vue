@@ -1,13 +1,3 @@
-<template lang="html">
-    <label class="checkbox">
-        <span v-text="label" />
-        <input type="checkbox"
-               :checked="isChecked(value)"
-               :value="value"
-               @change="change(value)">
-    </label>
-</template>
-
 <script>
 import { changeList } from '_js/mutations';
 export default {
@@ -40,6 +30,8 @@ export default {
                 return [];
             },
         },
+        // label可点击
+        labelClick: Function,
         // 翻转标签与选项框位置
         reversal: {
             type: Boolean,
@@ -64,13 +56,28 @@ export default {
                 : this.inputValue.includes(v);
         },
     },
+    render(h) {
+        let tag = 'label',
+            labelClick = () => {};
+        if (this.labelClick) {
+            tag = 'div';
+            labelClick = this.labelClick;
+        }
+        return h(tag, { class: 'checkbox' }, [
+            (<span onClick={labelClick}>{this.label}</span>),
+            (<input type="checkbox"
+                checked={this.isChecked(this.value)}
+                value={this.value}
+                onChange={() => this.change(this.value)} />),
+        ]);
+    },
 };
 </script>
 
 <style lang="stylus" scoped>
 .checkbox
     margin: 5px
-    display inline-flex
+    display inline-block
     flex-wrap nowrap
     align-items center
     cursor pointer
