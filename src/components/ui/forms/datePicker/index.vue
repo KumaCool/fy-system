@@ -13,6 +13,7 @@
                           readonly
                           :value="inputValue"
                           :disabled="disabled"
+                          @click:clear="clear"
                           v-on="{...on, ...inputListeners}" />
         </template>
         <v-date-picker v-if="!showTime"
@@ -118,6 +119,11 @@ export default {
             value = value.split(' ');
             this.dateValue = value[0];
             this.timeValue = value[1];
+        },
+        // 清空
+        clear() {
+            this.dateValue = '';
+            this.timeValue = '';
         },
         toChange() {
             if (this.time) {
