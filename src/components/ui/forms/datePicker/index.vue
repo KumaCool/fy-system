@@ -11,6 +11,7 @@
         <template v-slot:activator="{on}">
             <v-text-field v-bind="inputAttrsObj"
                           readonly
+                          :rules="rules"
                           :value="inputValue"
                           :disabled="disabled"
                           @click:clear="clear"
@@ -37,6 +38,11 @@ export default {
         value: { required: true },
         // 清空按钮
         clearable: Boolean,
+        // 规则
+        rules: {
+            type: Array,
+            default: () => [],
+        },
         // 文本框属性配置
         inputAttrs: {
             type: Object,
