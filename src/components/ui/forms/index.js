@@ -1,14 +1,14 @@
 // 自动化表单组件
 // 根据配置自动生成表单模板
 
-import { createHOC } from 'vue-hoc';
 import {
-    VForm,
-    VContainer,
-    VLayout,
     VFlex,
+    VForm,
+    VLayout,
     VTextField,
 } from 'vuetify/lib';
+
+import { createHOC } from 'vue-hoc';
 import { required } from '_js/getters';
 
 export default createHOC(VForm, {
@@ -26,8 +26,6 @@ export default createHOC(VForm, {
         forms: Array,
         // 表单项配置
         formOption: Object,
-        // 组件配置
-        container: Object,
         layout: Object,
         flex: Object,
         // 组件快捷配置选项
@@ -51,11 +49,12 @@ export default createHOC(VForm, {
             container = el => {
                 let layoutOpt = {
                     attrs: {},
+                    class: 'pa-2',
                     ...this.$props.layout,
                 };
                 if (this.$props.layoutColumn) layoutOpt.attrs.column = true;
                 if (this.$props.layoutAlignCenter) layoutOpt.attrs['align-center'] = true;
-                return h(VContainer, { ...this.$props.container }, [h(VLayout, layoutOpt, el)]);
+                return h(VLayout, layoutOpt, el);
             },
             flex = el => {
                 let opt = {
