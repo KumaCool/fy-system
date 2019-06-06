@@ -58,7 +58,8 @@ export default {
             formData: {
                 loginName: '',
                 userName: '',
-                englishName: '',
+                lastName: '',
+                firstName: '',
                 gender: '',
                 age: '',
                 // type: '',
@@ -78,8 +79,13 @@ export default {
                     [required],
                 ],
                 [
-                    'englishName',
-                    '英文名',
+                    'lastName',
+                    '英文姓氏',
+                    [required],
+                ],
+                [
+                    'firstName',
+                    '英文名字',
                     [required],
                 ],
                 ['__', '性别'],
@@ -102,7 +108,8 @@ export default {
         keys() {
             return [
                 'userName',
-                'englishName',
+                'lastName',
+                'firstName',
                 'gender',
                 'age',
                 'buyState',
@@ -199,11 +206,13 @@ export default {
                     R.map(R.fromPairs),
                     R.reduceBy(valueFn, [], toGroup),
                     R.toPairs
-                )(cards);
-            return {
-                ...this.pick(this.formData),
-                idCradList: cardGroup,
-            };
+                )(cards),
+                data = {
+                    ...this.pick(this.formData),
+                    idCradList: cardGroup,
+                };
+            if (this.value && this.value.userId) data.userId = this.value.userId;
+            return data;
         },
         onSubmit() {
             if (!this.$refs.form.$children[0].validate()) return;

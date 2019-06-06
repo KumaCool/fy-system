@@ -85,6 +85,15 @@
                         </v-edit-dialog>
                     </td>
                     <td class="actions">
+                        <v-btn v-tooltip="'编辑'"
+                               fab
+                               small
+                               color="info"
+                               @click="showUserForm(props.item)">
+                            <v-icon>
+                                iconfont icon-write
+                            </v-icon>
+                        </v-btn>
                         <v-btn v-tooltip="'重置密码'"
                                fab
                                small
@@ -115,7 +124,24 @@
                           content-height="500px"
                           :title="dialogTitle"
                           transition="dialog-transition">
-                <user-form v-model="userForm"
+                <v-layout v-if="repeatUser.length"
+                          class="importError"
+                          column
+                          justify-center
+                          align-center>
+                    <v-flex v-for="(item, index) in repeatUser" :key="index">
+                        <span v-text="item.userName" />
+                        <span v-text="item.loginName" />
+                        <span v-text="item.errorInfo" />
+                    </v-flex>
+                    <v-flex>
+                        <v-btn color="warning" @click="dialog = false">
+                            关闭
+                        </v-btn>
+                    </v-flex>
+                </v-layout>
+                <user-form v-else
+                           v-model="userForm"
                            @change="onSubmit"
                            @close="dialog = false" />
             </title-dialog>
@@ -175,10 +201,14 @@ export default {
             userForm: {},
             // 弹窗
             dialog: false,
+            // 弹层标题
+            dialogTitle: '',
             // 弹窗类型: 0添加, 修改
             dialogType: 0,
             // 图标加载状态: 删除按钮
             iconLoading: {},
+            // 重复用户
+            repeatUser: [],
         };
     },
     computed: {
@@ -219,10 +249,6 @@ export default {
                 ];
             return R.map(R.zipObj(keys), data);
         },
-        // 弹层标题
-        dialogTitle() {
-            return this.dialogType ? '编辑员工' : '添加员工';
-        },
         ...mapGetters('storeDictionary', [
             'gender',
             'cardType',
@@ -243,12 +269,20 @@ export default {
         showUserForm(value = null) {
             if (value instanceof MouseEvent) value = null;
             this.dialogType = value ? 1 : 0;
+            this.dialogTitle = this.dialogType ? '编辑员工' : '添加员工';
+            this.repeatUser = [];
             this.userForm = value || {};
             this.dialog = true;
         },
         // 上传文件
         uploadFile(v) {
-            return this.importUserFile(v);
+            return this.importUserFile(v).then(res => {
+                this.getData();
+                if (!res.length) return;
+                this.repeatUser = res;
+                this.dialog = true;
+                this.dialogTitle = '异常用户!';
+            });
         },
         download() {
             window.open('http://qiniu.oatalk.cn/userTemplate.xls');
@@ -293,6 +327,7 @@ export default {
             'importUserFile',
             'getUserList',
             'addUser',
+            'updateUser',
             'resetPassword',
             'changeBuyState',
             'delUser',
@@ -317,4 +352,6 @@ export default {
             flex-direction column
     .actions
         padding: 3px 24px 0!important
+.importError span
+    margin-right 10px
 </style>

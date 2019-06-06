@@ -13,11 +13,11 @@ export default {
     // 导入用户文件
     importUserFile: [
         'user/importExcelUserInfo',
-        file => {
-            return {
-                file,
-                interceptors: false,
-            };
+        files => {
+            let data = new FormData();
+            data.append('file', files[0]);
+            data.append('interceptors', false);
+            return data;
         },
         {
             headers: { 'Content-Type': 'multipart/form-data' },

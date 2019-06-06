@@ -21,6 +21,7 @@
                     </v-toolbar-title>
                     <v-spacer />
                     <v-toolbar-items>
+                        <div class="" v-text="userInfo.companyName" />
                         <div v-if="userInfo" class="userInfo">
                             <span v-text="userInfo.userName" />
                             <span class="mobile" v-text="userInfo.mobile" />
