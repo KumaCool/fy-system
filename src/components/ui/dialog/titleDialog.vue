@@ -24,6 +24,7 @@ export default createHOC(VDialog, {
         },
     },
     render(h) {
+        if (!this.$attrs.value) return;
         let props = { ...this.$props },
             className = 'GlobalTitleDialog',
             children = this.$scopedSlots.default();
@@ -42,7 +43,7 @@ export default createHOC(VDialog, {
                     h(VCardTitle, this.$props.title),
                     h(
                         VCardText,
-                        { style: { height: this.contentHeightFormat } },
+                        { style: { 'max-height': this.contentHeightFormat } },
                         children
                     ),
                 ]),
