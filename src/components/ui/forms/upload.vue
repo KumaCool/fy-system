@@ -1,6 +1,5 @@
 <template lang="html">
     <v-btn v-bind="$attrs"
-           v-on="$listeners"
            @click="openFind">
         <slot />
         <input ref="fileInput"
@@ -19,10 +18,8 @@ export default {
             this.$refs.fileInput.click();
         },
         change(e) {
-            let files = e.target.files,
-                data = new FormData();
-            data.append('file', files[0]);
-            this.$emit('change', data);
+            let files = e.target.files;
+            this.$emit('change', files);
         },
     },
 };
