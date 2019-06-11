@@ -24,10 +24,9 @@ export default createHOC(VDialog, {
         },
     },
     render(h) {
-        if (!this.$attrs.value) return;
         let props = { ...this.$props },
             className = 'GlobalTitleDialog',
-            children = this.$scopedSlots.default();
+            children = this.$scopedSlots.default ? this.$scopedSlots.default() : [];
         if (props.contentClass.indexOf(className) < 0) props.contentClass = R.trim(props.contentClass + ' ' + className);
         // 判断是否每次弹窗渲染
         if (this.renderEvery && !this.$attrs.value) children = [];
