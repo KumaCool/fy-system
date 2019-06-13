@@ -23,7 +23,9 @@
                        scrollable
                        @change="toChange" />
         <v-time-picker v-else
+                       class="time"
                        v-model="timeValue"
+                       format="24hr"
                        use-seconds
                        v-bind="timeAttrs"
                        @change="change" />
@@ -143,3 +145,7 @@ export default {
     },
 };
 </script>
+<style lang="stylus" scoped>
+.time >>> .v-time-picker-title__time .v-picker__title__btn
+        font-size 55px
+</style>
