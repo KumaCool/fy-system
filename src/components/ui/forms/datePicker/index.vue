@@ -23,8 +23,8 @@
                        scrollable
                        @change="toChange" />
         <v-time-picker v-else
-                       class="time"
                        v-model="timeValue"
+                       class="time"
                        format="24hr"
                        use-seconds
                        v-bind="timeAttrs"
