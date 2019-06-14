@@ -100,7 +100,9 @@ export default createHOC(VForm, {
                         : !slot.componentInstance
                             ? flex(slot)
                             : slot;
-                } else return template(label, h(com, options));
+                } else {
+                    return template(label, h(com, options));
+                }
             });
         }
         // 将剩余默认插槽格式化为标准表单件
