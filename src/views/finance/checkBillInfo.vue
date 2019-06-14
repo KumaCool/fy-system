@@ -11,6 +11,8 @@
                         hide-actions>
                 <template v-slot:items="{item}">
                     <td>{{ item.uuid }}</td>
+                    <td>{{ item.orderInfo.oaNumber }}</td>
+                    <td>{{ item.orderInfo.bookingUser }}</td>
                     <td>{{ item.customerName }}</td>
                     <td>{{ item.orderInfo.enterpriseName }}</td>
                     <td />
@@ -68,6 +70,8 @@ export default {
                 ],
                 data = [
                     ['订单号', 'uuid'],
+                    ['OA票号', 'orderInfo.oaNumber'],
+                    ['订票人', 'orderInfo.bookingUser'],
                     ['旅客姓名', 'customerName'],
                     ['组织架构', 'orderInfo.enterpriseName'],
                     ['成本中心', ''],

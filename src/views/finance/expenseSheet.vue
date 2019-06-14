@@ -70,32 +70,35 @@
                         hide-actions>
                 <template v-slot:items="{item}">
                     <td>{{ item.trafficOrderId }}</td>
+                    <td>{{ item.oaNumber }}</td>
+                    <td>{{ item.bookingUser }}</td>
                     <td>
                         <div>{{ item.trafficNumber }}</div>
                         <div>{{ item.planeDate }}</div>
                     </td>
                     <td>
-                        <div>{{ item.startPlace }}</div>
-                        <div>{{ item.startTime }}</div>
+                        <div>{{ item.startPlace }}{{ item.startTime }}</div>
+                        <div>{{ item.endPlace }}{{ item.endTime }}</div>
                     </td>
-                    <td>
+                    <!-- <td>
                         <div>{{ item.endPlace }}</div>
                         <div>{{ item.endTime }}</div>
-                    </td>
+                    </td> -->
                     <td>
                         <div>{{ item.createTime[1] }}</div>
                         <div>{{ item.createTime[0] }}</div>
                     </td>
                     <td>
                         <div v-for="(v, i) in item.userName"
-                             :key="i"
-                             v-text="v" />
+                             :key="i">
+                            {{ v }}/{{ item.idCrad[i] }}
+                        </div>
                     </td>
-                    <td>
+                    <!-- <td>
                         <div v-for="(v, i) in item.pnr"
                              :key="i"
                              v-text="v" />
-                    </td>
+                    </td> -->
                     <td>
                         <div v-for="(v, i) in item.ticketNo"
                              :key="i"
@@ -103,7 +106,8 @@
                     </td>
                     <td>{{ findDic('tripType', item.trafficOrderState).label }}</td>
                     <td>{{ item.payPrice }}</td>
-                    <td>{{ findDic('payType', item.payState).label }}</td>
+                    <td>{{ item.remark }}</td>
+                    <!-- <td>{{ findDic('payType', item.payState).label }}</td> -->
                 </template>
             </list-table>
         </v-flex>
@@ -181,16 +185,19 @@ export default {
                 ],
                 data = [
                     ['订单号', 'trafficOrderId'],
+                    ['OA单号', 'oaNumber'],
+                    ['下单人', 'bookingUser'],
                     ['航班号/日期', ''],
-                    ['出发地', 'startPlace'],
-                    ['目的地', 'endPlace'],
+                    ['航程', 'startPlace'],
+                    // ['目的地', 'endPlace'],
                     ['预定时间', 'createTime'],
                     ['出行人', 'userName'],
-                    ['PNR', 'pnr'],
+                    // ['PNR', 'pnr'],
                     ['票号', 'ticketNo'],
                     ['票状态', 'trafficOrderState'],
                     ['总金额', 'payPrice'],
-                    ['状态', 'payState'],
+                    ['备注', 'remark'],
+                    // ['支付状态', 'payState'],
                 ];
             return R.map(R.zipObj(keys), data);
         },
@@ -203,6 +210,7 @@ export default {
                 loop = (v, fn) => R.apply(R.compose, R.map(fn, v)),
                 fn = R.compose(
                     loop([
+                        'idCrad',
                         'userName',
                         'pnr',
                         'ticketNo',
