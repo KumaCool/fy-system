@@ -34,7 +34,7 @@
         </v-flex>
         <v-flex shrink my-3>
             <list-table class="table"
-                        :headers="userListHeader"
+                        :headers="$data.$userListHeader"
                         :items="userList"
                         :loading="dataLoading"
                         hide-actions>
@@ -197,6 +197,19 @@ export default {
             },
             // 用户数据
             userList: [],
+            // 用户列表标题
+            $userListHeader: [
+                ['姓名', 'userName'],
+                ['英文名', 'englishName'],
+                ['性别', 'gender'],
+                ['年龄', 'age'],
+                ['证件类型', 'type'],
+                ['证件号', 'idCrad'],
+                ['证件有效期', 'validDate'],
+                ['单独购票', 'buyState'],
+                ['账号', 'loginName'],
+                ['', ''],
+            ],
             // 用户表单
             userForm: {},
             // 弹窗
@@ -227,27 +240,6 @@ export default {
                 ['qIdCrad', '证件号码'],
                 ['__', '证件类型'],
             ];
-        },
-        // 用户列表标题
-        userListHeader() {
-            let keys = [
-                    'text',
-                    'value',
-                    'sortable',
-                ],
-                data = [
-                    ['姓名', 'userName'],
-                    ['英文名', 'englishName'],
-                    ['性别', 'gender'],
-                    ['年龄', 'age'],
-                    ['证件类型', 'type'],
-                    ['证件号', 'idCrad'],
-                    ['证件有效期', 'validDate'],
-                    ['单独购票', 'buyState'],
-                    ['账号', 'loginName'],
-                    ['', ''],
-                ];
-            return R.map(R.zipObj(keys), data);
         },
         ...mapGetters('storeDictionary', [
             'gender',
@@ -337,10 +329,8 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.select .formItem div:not(.label)
-    width 120px
-    .cardType
-        width 170px
+.select .formItem div:not(.label).cardType
+    width 170px
 .table >>>
     td
         padding 10px 24px !important

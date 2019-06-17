@@ -5,17 +5,11 @@
         <v-flex shrink>
             <select-forms class="select"
                           flex-row
-                          :forms="selectForms"
+                          :forms="$data.$selectForms"
                           @submit.prevent="getData">
-                <div class="d-flex dateRange">
-                    <date-picker v-model="selectData.startDate"
-                                 clearable
-                                 @change="clearEndDate('endDate', $event)" />
-                    <span class="label">至</span>
-                    <date-picker v-model="selectData.endDate"
-                                 clearable
-                                 :allowed-dates="allowedDates(selectData.startDate)" />
-                </div>
+                <date-range :start-date.sync="selectData.startDate"
+                            :end-date.sync="selectData.endDate"
+                            :rules="$data.$required" />
                 <v-btn block
                        color="warning"
                        type="submit">
@@ -29,7 +23,7 @@
 
         <v-flex grow my-3>
             <list-table class="table"
-                        :headers="listHeader"
+                        :headers="$data.$listHeader"
                         :items="formatData"
                         :loading="dataLoading"
                         hide-actions>
@@ -80,9 +74,9 @@
 
 <script>
 import { mapActions } from 'vuex';
-import { relationDate } from '_js/getters';
 import { objSplit } from '_js/mutations';
 import SelectForms from '~/ui/forms/selectForms';
+import DateRange from '~/ui/forms/datePicker/range';
 import CheckBillInfo from './checkBillInfo';
 
 import pageMixin from '@/mixins/page';
@@ -90,6 +84,7 @@ export default {
     name: 'CheckBill',
     components: {
         SelectForms,
+        DateRange,
         CheckBillInfo,
     },
     mixins: [pageMixin],
@@ -104,7 +99,25 @@ export default {
                 uuid: '',
                 pnr: '',
             },
+            $selectForms: [
+                ['ticketNumber', '票号'],
+                ['writeOffStatus', '状态'],
+                ['steitmentCode', '对账单号'],
+                ['uuid', '订单号'],
+                ['pnr', 'PNR'],
+                ['__', '对账周期'],
+            ],
             dataList: [],
+            $listHeader: [
+                ['服务商', 'providerName'],
+                ['对账单号', 'steitmentCode'],
+                ['账单周期', ''],
+                ['账单金额', 'totalAmount'],
+                ['收件人', 'sendUserName'],
+                ['确认时间', 'timeOutDate'],
+                ['状态', 'writeOffStatus'],
+                ['操作', ''],
+            ],
             // 弹窗
             dialog: false,
             // 详情
@@ -112,34 +125,6 @@ export default {
         };
     },
     computed: {
-        listHeader() {
-            let keys = [
-                    'text',
-                    'value',
-                    'sortable',
-                ],
-                data = [
-                    ['服务商', 'providerName'],
-                    ['对账单号', 'steitmentCode'],
-                    ['账单周期', ''],
-                    ['账单金额', 'totalAmount'],
-                    ['收件人', 'sendUserName'],
-                    ['确认时间', 'timeOutDate'],
-                    ['状态', 'writeOffStatus'],
-                    ['操作', ''],
-                ];
-            return R.map(R.zipObj(keys), data);
-        },
-        selectForms() {
-            return [
-                ['ticketNumber', '票号'],
-                ['writeOffStatus', '状态'],
-                ['steitmentCode', '对账单号'],
-                ['uuid', '订单号'],
-                ['pnr', 'PNR'],
-                ['__', '对账周期'],
-            ];
-        },
         // 格式化列表数据
         formatData() {
             // 对目标字段执行分裂
@@ -157,19 +142,6 @@ export default {
         this.getData();
     },
     methods: {
-        // 允许操作的时间
-        allowedDates(date) {
-            return v => {
-                if (!date) return true;
-                let rel = relationDate(date);
-                return rel(v) < 0;
-            };
-        },
-        // 清空结束时间
-        clearEndDate(key, v) {
-            let rel = relationDate(v);
-            if (rel(this.selectData[key]) > 0) this.selectData[key] = '';
-        },
         // 显示详情
         showBillInfo(v) {
             this.bill = v;
@@ -196,12 +168,6 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.dateRange
-    display flex
-    align-items: center;
-    .label
-        margin-left 10px
-    // .multiLine
 .table tbody td div
     white-space nowrap
 </style>

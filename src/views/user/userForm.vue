@@ -230,7 +230,7 @@ export default {
     .layout .formItem
         padding 4px 0
     .label
-        margin-top -28px
+        margin-top -5px
         width 80px
         text-align right
     .v-text-field.v-text-field--enclosed .v-text-field__details

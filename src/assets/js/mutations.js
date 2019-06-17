@@ -55,3 +55,48 @@ export const fileSave = R.curry((fileName, data) => {
     a.click();
     return fileName;
 });
+
+// 在列表中去除或添加值
+// changeList:: a -> [a] -> [] | [a]
+export const changeList = R.curry((value, list) => {
+    let index = R.findIndex(R.identical(value), list);
+    return index < 0
+        ? R.append(value, list)
+        : R.remove(index, 1, list);
+});
+
+// 时间格式化
+// dateFormat:: a -> s -> s a | null
+export const dateFormat = (date, fmt) => {
+    date = new Date(date);
+    if (isNaN(Date.parse(date))) return null;
+    var o = {
+        'M+': date.getMonth() + 1, // 月份
+        'd+': date.getDate(), // 日
+        'h+': date.getHours(), // 小时
+        'm+': date.getMinutes(), // 分
+        's+': date.getSeconds(), // 秒
+        'q+': Math.floor((date.getMonth() + 3) / 3), // 季度
+        'S': date.getMilliseconds(), // 毫秒
+    };
+    if (/(y+)/.test(fmt)) {
+        fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
+    }
+    for (var k in o) {
+        if (new RegExp('(' + k + ')').test(fmt)) {
+            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? (o[k]) : (('00' + o[k]).substr(('' + o[k]).length)));
+        }
+    }
+    return fmt;
+};
+
+// 数据格式化为
+// formatList:: a -> b -> c -> C [{b:a}]
+export const formatList = R.curry((keys, values, list) => R.map(
+    R.compose(
+        R.zipObj(keys),
+        R.values,
+        R.pick(values)
+    ),
+    list
+));

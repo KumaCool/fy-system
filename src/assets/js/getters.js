@@ -49,3 +49,17 @@ export const getOffset = el => {
         parent = el.offsetParent;
     return parent ? R.mergeWith(R.add, value, getOffset(parent)) : value;
 };
+
+// 查询指定的父元素,未找到将返回 undefined
+// findParent:: Document a -> CSS selectors -> Document b | undefined
+export const findParent = R.curry((el, selectors) => {
+    let arr = R.splitAt(1, selectors),
+        parent = el.parentNode;
+    return parent.className.search(arr[1]) >= 0
+        || parent.id === arr[1]
+        || parent.tagName === selectors.toUpperCase()
+        ? parent
+        : parent.tagName === 'BODY'
+            ? undefined
+            : findParent(parent, selectors);
+});

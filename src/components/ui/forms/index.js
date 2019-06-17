@@ -1,14 +1,15 @@
 // 自动化表单组件
 // 根据配置自动生成表单模板
 
-import { createHOC } from 'vue-hoc';
 import {
-    VForm,
-    VContainer,
-    VLayout,
     VFlex,
+    VForm,
+    VLayout,
     VTextField,
 } from 'vuetify/lib';
+
+import { createHOC } from 'vue-hoc';
+import { required } from '_js/getters';
 
 export default createHOC(VForm, {
     name: 'AutoForms',
@@ -23,10 +24,8 @@ export default createHOC(VForm, {
         // 表单配置集
         // 通过对象里的'__'字段进行占位操作,可改变slots顺序
         forms: Array,
-        // 表单项项配置
+        // 表单项配置
         formOption: Object,
-        // 组件配置
-        container: Object,
         layout: Object,
         flex: Object,
         // 组件快捷配置选项
@@ -36,17 +35,26 @@ export default createHOC(VForm, {
         // 应用于flex
         flexRow: Boolean,
     },
+    computed: {
+        vFormOpt() {
+            return R.mergeDeepRight(
+                { props: { outline: true } },
+                this.formOption || {}
+            );
+        },
+    },
     render(h) {
         // 占位符
         const placeholder = '__',
             container = el => {
                 let layoutOpt = {
                     attrs: {},
+                    class: 'pa-2',
                     ...this.$props.layout,
                 };
                 if (this.$props.layoutColumn) layoutOpt.attrs.column = true;
                 if (this.$props.layoutAlignCenter) layoutOpt.attrs['align-center'] = true;
-                return h(VContainer, { ...this.$props.container }, [h(VLayout, layoutOpt, el)]);
+                return h(VLayout, layoutOpt, el);
             },
             flex = el => {
                 let opt = {
@@ -59,7 +67,11 @@ export default createHOC(VForm, {
                 return h(VFlex, opt, [el]);
             },
             div = (el, className) => (<div class={className}>{el}</div>),
-            template = (label, value) => flex([div(label, 'label'), div(value)]);
+            template = (label, value, isRequired) => {
+                let className = 'label';
+                if (isRequired) className += ' required';
+                return flex([div(label, className), value]);
+            };
         let defaultSlots = this.$slots.default ? this.$slots.default.filter(v => !v.isComment) : [],
             forms = this.$props.forms || [];
         if (forms.length) {
@@ -74,10 +86,16 @@ export default createHOC(VForm, {
                     options = typeof lastValueDec === 'object'
                         ? lastValueDec
                         : lastValue,
-                    rule = lastValue;
+                    rule = lastValue,
+                    isRequired;
                 if (typeof options !== 'object') options = { attrs: { name: key } };
                 if (R.type(rule) !== 'Array') rule = [];
-                if (this.$props.formOption) options = R.mergeDeepRight(this.$props.formOption, options);
+                let requiredIndex = rule.indexOf('required');
+                if (requiredIndex >= 0) {
+                    isRequired = true;
+                    rule = R.update(requiredIndex, required, rule);
+                }
+                options = R.mergeDeepRight(this.vFormOpt, options);
                 if (this.$props.data) {
                     options = R.mergeDeepRight({
                         props: {
@@ -96,13 +114,11 @@ export default createHOC(VForm, {
                 if (key === placeholder) {
                     let slot = defaultSlots.shift();
                     return label
-                        ? template(label, slot)
+                        ? template(label, slot, isRequired)
                         : !slot.componentInstance
                             ? flex(slot)
                             : slot;
-                } else {
-                    return template(label, h(com, options));
-                }
+                } else return template(label, h(com, options), isRequired);
             });
         }
         // 将剩余默认插槽格式化为标准表单件

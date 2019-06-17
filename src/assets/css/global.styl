@@ -33,15 +33,35 @@ a
 .nowrap
     white-space nowrap
 
+// 必填
+.required::before
+    position absolute
+    top 2px
+    left -10px
+    content '*'
+    color $_color_error
+
 // 表单 > 标签单行排列方式
 .formItem.row
+    margin-right 10px
     display flex
-    flex-flow row wrap
+    flex-flow row
     align-items center
+    & > div:not(.label)
+        min-width 120px
     .label
+        position relative
+        @extend .nowrap
         margin-right 10px
+        margin-bottom 8px
+        font-weight 400
         & + *
             flex auto
+            &:not(.dateRange)
+                width 0
+    .v-text-field__details
+        position absolute
+        bottom -5px
 
 // 表单
 .theme--light.v-input
@@ -67,6 +87,13 @@ a
             font-size 14px
         .v-label
             font-size 12px
+    // 选择器
+    &.v-select
+        .v-select__selections
+            width 0
+        .v-select__selection--comma
+            single()
+            display inline-block
 
 // 翻页按钮
 .v-pagination__item:focus

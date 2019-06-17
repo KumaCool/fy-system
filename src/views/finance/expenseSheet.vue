@@ -14,15 +14,8 @@
                 <selector-city v-if="selectedMore"
                                v-model="selectData.endPlace"
                                outline />
-                <div class="d-flex dateRange">
-                    <date-picker v-model="selectData.searchAircraftStartTime"
-                                 clearable
-                                 @change="clearEndDate('searchAircraftEndTime', $event)" />
-                    <span class="label">至</span>
-                    <date-picker v-model="selectData.searchAircraftEndTime"
-                                 clearable
-                                 :allowed-dates="allowedDates(selectData.searchAircraftStartTime)" />
-                </div>
+                <date-range :start-date.sync="selectData.searchAircraftStartTime"
+                            :end-date.sync="selectData.searchAircraftEndTime" />
                 <div v-if="selectedMore" class="d-flex dateRange">
                     <date-picker v-model="selectData.searchAppointmentStartTime"
                                  clearable
@@ -33,6 +26,7 @@
                                  :allowed-dates="allowedDates(selectData.searchAppointmentStartTime)" />
                 </div>
                 <v-select v-model="selectData.trafficOrderId"
+                          class="payType"
                           :items="payType"
                           item-text="label"
                           item-value="value"
@@ -64,7 +58,7 @@
         </v-flex>
         <v-flex grow my-3>
             <list-table class="table"
-                        :headers="dataListHeader"
+                        :headers="$data.$dataListHeader"
                         :items="formatData"
                         :loading="dataLoading"
                         hide-actions>
@@ -121,9 +115,9 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import { relationDate } from '_js/getters';
 import { objSplit } from '_js/mutations';
 import SelectForms from '~/ui/forms/selectForms';
+import DateRange from '~/ui/forms/datePicker/range';
 import SelectorCity from '~/selectorCity';
 
 import pageMixin from '@/mixins/page';
@@ -131,6 +125,7 @@ export default {
     name: 'ExpenseSheet',
     components: {
         SelectForms,
+        DateRange,
         SelectorCity,
     },
     mixins: [pageMixin],
@@ -154,6 +149,22 @@ export default {
             // 更多搜索
             selectedMore: false,
             dataList: [],
+            $dataListHeader: [
+                ['订单号', 'trafficOrderId'],
+                ['OA单号', 'oaNumber'],
+                ['下单人', 'bookingUser'],
+                ['航班号/日期', ''],
+                ['航程', 'startPlace'],
+                // ['目的地', 'endPlace'],
+                ['预定时间', 'createTime'],
+                ['出行人', 'userName'],
+                // ['PNR', 'pnr'],
+                ['票号', 'ticketNo'],
+                ['票状态', 'trafficOrderState'],
+                ['总金额', 'payPrice'],
+                ['备注', 'remark'],
+                // ['支付状态', 'payState'],
+            ],
         };
     },
     computed: {
@@ -176,30 +187,6 @@ export default {
                     ['__', '出发时间'],
                     ['__', '订单状态'],
                 ];
-        },
-        dataListHeader() {
-            let keys = [
-                    'text',
-                    'value',
-                    'sortable',
-                ],
-                data = [
-                    ['订单号', 'trafficOrderId'],
-                    ['OA单号', 'oaNumber'],
-                    ['下单人', 'bookingUser'],
-                    ['航班号/日期', ''],
-                    ['航程', 'startPlace'],
-                    // ['目的地', 'endPlace'],
-                    ['预定时间', 'createTime'],
-                    ['出行人', 'userName'],
-                    // ['PNR', 'pnr'],
-                    ['票号', 'ticketNo'],
-                    ['票状态', 'trafficOrderState'],
-                    ['总金额', 'payPrice'],
-                    ['备注', 'remark'],
-                    // ['支付状态', 'payState'],
-                ];
-            return R.map(R.zipObj(keys), data);
         },
         // 格式化列表数据
         formatData() {
@@ -225,19 +212,6 @@ export default {
         this.getData();
     },
     methods: {
-        // 允许操作的时间
-        allowedDates(date) {
-            return v => {
-                if (!date) return true;
-                let rel = relationDate(date);
-                return rel(v) < 0;
-            };
-        },
-        // 清空结束时间
-        clearEndDate(key, v) {
-            let rel = relationDate(v);
-            if (rel(this.selectData[key]) > 0) this.selectData[key] = '';
-        },
         // 切换更多搜索
         changeSelectedMore() {
             this.selectedMore = !this.selectedMore;
@@ -258,6 +232,8 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.select .formItem div:not(.label) .payType
+    width 170px !important
 .ticketType >>>
     .v-btn
         color $_color_white
@@ -266,11 +242,11 @@ export default {
             background none
         &.v-btn--active
             background-color $_color_warning
-.dateRange
-    display flex
-    align-items: center;
-    .label
-        margin-left 10px
+// .dateRange
+//     display flex
+//     align-items: center;
+//     .label
+//         margin-left 10px
 .table tbody td div
     white-space nowrap
 </style>

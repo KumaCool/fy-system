@@ -4,6 +4,14 @@ import { VDataTable } from 'vuetify/lib';
 export default createHOC(VDataTable, { name: 'ListTable' }, {
     'class': { listTable: true },
     props: {
+        headers(props) {
+            const keys = [
+                'text',
+                'value',
+                'sortable',
+            ];
+            return R.map(R.zipObj(keys), props.headers);
+        },
         'noDataText'(props) {
             if (this.$attrs.loading) return '加载数据中...';
             return props.noDataText || '暂无数据';

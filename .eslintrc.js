@@ -53,7 +53,9 @@ module.exports = {
     'vue/mustache-interpolation-spacing': 'error',
     'vue/name-property-casing': 'error',
     'vue/this-in-template': 'error',
-    'vue/singleline-html-element-content-newline': 'error'
+    'vue/singleline-html-element-content-newline': 'error',
+    'vue/require-default-prop': 'off',
+    'vue/require-prop-types': 'off'
   },
   parserOptions: {
     parser: 'babel-eslint'
