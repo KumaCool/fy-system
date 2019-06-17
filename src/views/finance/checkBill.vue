@@ -7,15 +7,9 @@
                           flex-row
                           :forms="$data.$selectForms"
                           @submit.prevent="getData">
-                <div class="d-flex dateRange">
-                    <date-picker v-model="selectData.startDate"
-                                 clearable
-                                 @change="clearEndDate('endDate', $event)" />
-                    <span class="label">至</span>
-                    <date-picker v-model="selectData.endDate"
-                                 clearable
-                                 :allowed-dates="allowedDates(selectData.startDate)" />
-                </div>
+                <date-range :start-date.sync="selectData.startDate"
+                            :end-date.sync="selectData.endDate"
+                            :rules="$data.$required" />
                 <v-btn block
                        color="warning"
                        type="submit">
@@ -80,9 +74,9 @@
 
 <script>
 import { mapActions } from 'vuex';
-import { relationDate } from '_js/getters';
 import { objSplit } from '_js/mutations';
 import SelectForms from '~/ui/forms/selectForms';
+import DateRange from '~/ui/forms/datePicker/range';
 import CheckBillInfo from './checkBillInfo';
 
 import pageMixin from '@/mixins/page';
@@ -90,6 +84,7 @@ export default {
     name: 'CheckBill',
     components: {
         SelectForms,
+        DateRange,
         CheckBillInfo,
     },
     mixins: [pageMixin],
@@ -147,19 +142,6 @@ export default {
         this.getData();
     },
     methods: {
-        // 允许操作的时间
-        allowedDates(date) {
-            return v => {
-                if (!date) return true;
-                let rel = relationDate(date);
-                return rel(v) < 0;
-            };
-        },
-        // 清空结束时间
-        clearEndDate(key, v) {
-            let rel = relationDate(v);
-            if (rel(this.selectData[key]) > 0) this.selectData[key] = '';
-        },
         // 显示详情
         showBillInfo(v) {
             this.bill = v;
@@ -186,12 +168,6 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.dateRange
-    display flex
-    align-items: center;
-    .label
-        margin-left 10px
-    // .multiLine
 .table tbody td div
     white-space nowrap
 </style>
