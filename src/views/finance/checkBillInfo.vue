@@ -5,7 +5,7 @@
         </v-flex>
         <v-flex grow>
             <list-table class="table"
-                        :headers="listHeader"
+                        :headers="$data.$listHeader"
                         :items="currentData"
                         :loading="dataLoading"
                         hide-actions>
@@ -59,36 +59,30 @@ export default {
         },
     },
     data() {
-        return { dataList: [] };
+        return {
+            dataList: [],
+            $listHeader: [
+                ['订单号', 'uuid'],
+                ['OA票号', 'orderInfo.oaNumber'],
+                ['订票人', 'orderInfo.bookingUser'],
+                ['旅客姓名', 'customerName'],
+                ['组织架构', 'orderInfo.enterpriseName'],
+                ['成本中心', ''],
+                ['编码', 'pnrNo'],
+                ['票号', 'ticketNumber'],
+                ['操作日期', 'orderInfo.createTime'],
+                ['票面', 'salePrice'],
+                ['税金', 'taxPrice'],
+                ['公司佣金', 'commisionAmount'],
+                ['标准服务费', 'serviceAmount'],
+                ['合计', 'saleAmount'],
+                ['UATP-卡支付', 'uatpSaleAmount'],
+                ['应付款', 'payableSaleAmount'],
+                ['备注', 'descrip'],
+            ],
+        };
     },
     computed: {
-        listHeader() {
-            let keys = [
-                    'text',
-                    'value',
-                    'sortable',
-                ],
-                data = [
-                    ['订单号', 'uuid'],
-                    ['OA票号', 'orderInfo.oaNumber'],
-                    ['订票人', 'orderInfo.bookingUser'],
-                    ['旅客姓名', 'customerName'],
-                    ['组织架构', 'orderInfo.enterpriseName'],
-                    ['成本中心', ''],
-                    ['编码', 'pnrNo'],
-                    ['票号', 'ticketNumber'],
-                    ['操作日期', 'orderInfo.createTime'],
-                    ['票面', 'salePrice'],
-                    ['税金', 'taxPrice'],
-                    ['公司佣金', 'commisionAmount'],
-                    ['标准服务费', 'serviceAmount'],
-                    ['合计', 'saleAmount'],
-                    ['UATP-卡支付', 'uatpSaleAmount'],
-                    ['应付款', 'payableSaleAmount'],
-                    ['备注', 'descrip'],
-                ];
-            return R.map(R.zipObj(keys), data);
-        },
         // 当前页数据
         currentData() {
             let start = this.page > 1 ? (this.page - 1) * this.pageRow : 0,

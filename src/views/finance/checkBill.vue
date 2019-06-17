@@ -5,7 +5,7 @@
         <v-flex shrink>
             <select-forms class="select"
                           flex-row
-                          :forms="selectForms"
+                          :forms="$data.$selectForms"
                           @submit.prevent="getData">
                 <div class="d-flex dateRange">
                     <date-picker v-model="selectData.startDate"
@@ -29,7 +29,7 @@
 
         <v-flex grow my-3>
             <list-table class="table"
-                        :headers="listHeader"
+                        :headers="$data.$listHeader"
                         :items="formatData"
                         :loading="dataLoading"
                         hide-actions>
@@ -104,7 +104,25 @@ export default {
                 uuid: '',
                 pnr: '',
             },
+            $selectForms: [
+                ['ticketNumber', '票号'],
+                ['writeOffStatus', '状态'],
+                ['steitmentCode', '对账单号'],
+                ['uuid', '订单号'],
+                ['pnr', 'PNR'],
+                ['__', '对账周期'],
+            ],
             dataList: [],
+            $listHeader: [
+                ['服务商', 'providerName'],
+                ['对账单号', 'steitmentCode'],
+                ['账单周期', ''],
+                ['账单金额', 'totalAmount'],
+                ['收件人', 'sendUserName'],
+                ['确认时间', 'timeOutDate'],
+                ['状态', 'writeOffStatus'],
+                ['操作', ''],
+            ],
             // 弹窗
             dialog: false,
             // 详情
@@ -112,34 +130,6 @@ export default {
         };
     },
     computed: {
-        listHeader() {
-            let keys = [
-                    'text',
-                    'value',
-                    'sortable',
-                ],
-                data = [
-                    ['服务商', 'providerName'],
-                    ['对账单号', 'steitmentCode'],
-                    ['账单周期', ''],
-                    ['账单金额', 'totalAmount'],
-                    ['收件人', 'sendUserName'],
-                    ['确认时间', 'timeOutDate'],
-                    ['状态', 'writeOffStatus'],
-                    ['操作', ''],
-                ];
-            return R.map(R.zipObj(keys), data);
-        },
-        selectForms() {
-            return [
-                ['ticketNumber', '票号'],
-                ['writeOffStatus', '状态'],
-                ['steitmentCode', '对账单号'],
-                ['uuid', '订单号'],
-                ['pnr', 'PNR'],
-                ['__', '对账周期'],
-            ];
-        },
         // 格式化列表数据
         formatData() {
             // 对目标字段执行分裂

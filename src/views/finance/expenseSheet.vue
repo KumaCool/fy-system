@@ -64,7 +64,7 @@
         </v-flex>
         <v-flex grow my-3>
             <list-table class="table"
-                        :headers="dataListHeader"
+                        :headers="$data.$dataListHeader"
                         :items="formatData"
                         :loading="dataLoading"
                         hide-actions>
@@ -154,6 +154,22 @@ export default {
             // 更多搜索
             selectedMore: false,
             dataList: [],
+            $dataListHeader: [
+                ['订单号', 'trafficOrderId'],
+                ['OA单号', 'oaNumber'],
+                ['下单人', 'bookingUser'],
+                ['航班号/日期', ''],
+                ['航程', 'startPlace'],
+                // ['目的地', 'endPlace'],
+                ['预定时间', 'createTime'],
+                ['出行人', 'userName'],
+                // ['PNR', 'pnr'],
+                ['票号', 'ticketNo'],
+                ['票状态', 'trafficOrderState'],
+                ['总金额', 'payPrice'],
+                ['备注', 'remark'],
+                // ['支付状态', 'payState'],
+            ],
         };
     },
     computed: {
@@ -176,30 +192,6 @@ export default {
                     ['__', '出发时间'],
                     ['__', '订单状态'],
                 ];
-        },
-        dataListHeader() {
-            let keys = [
-                    'text',
-                    'value',
-                    'sortable',
-                ],
-                data = [
-                    ['订单号', 'trafficOrderId'],
-                    ['OA单号', 'oaNumber'],
-                    ['下单人', 'bookingUser'],
-                    ['航班号/日期', ''],
-                    ['航程', 'startPlace'],
-                    // ['目的地', 'endPlace'],
-                    ['预定时间', 'createTime'],
-                    ['出行人', 'userName'],
-                    // ['PNR', 'pnr'],
-                    ['票号', 'ticketNo'],
-                    ['票状态', 'trafficOrderState'],
-                    ['总金额', 'payPrice'],
-                    ['备注', 'remark'],
-                    // ['支付状态', 'payState'],
-                ];
-            return R.map(R.zipObj(keys), data);
         },
         // 格式化列表数据
         formatData() {
