@@ -71,6 +71,7 @@ export default {
 .dateRange >>>
     display flex
     align-items: baseline;
+    width 400px
     .division
         margin 0 10px
 </style>

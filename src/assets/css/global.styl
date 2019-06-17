@@ -43,9 +43,12 @@ a
 
 // 表单 > 标签单行排列方式
 .formItem.row
+    margin-right 10px
     display flex
     flex-flow row
     align-items center
+    & > div:not(.label)
+        min-width 120px
     .label
         position relative
         @extend .nowrap
@@ -54,10 +57,11 @@ a
         font-weight 400
         & + *
             flex auto
-            width 0
+            &:not(.dateRange)
+                width 0
     .v-text-field__details
         position absolute
-        bottom -18px
+        bottom -5px
 
 // 表单
 .theme--light.v-input

@@ -37,12 +37,10 @@ export default createHOC(AutoForms, { name: 'SelectForms' }, {
     border-left 9px solid $_color_primary
     radius()
     shadow(0 2px 4px)
-    .container .formItem
+    .formItem
         .label
-            // margin-bottom 25px
+            margin-bottom 0px
             font-weight bold
         .v-input__slot
             margin 0
-        .v-text-field__details
-            display none
 </style>
