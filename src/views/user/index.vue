@@ -329,10 +329,8 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.select .formItem div:not(.label)
-    width 120px
-    .cardType
-        width 170px
+.select .formItem div:not(.label).cardType
+    width 170px
 .table >>>
     td
         padding 10px 24px !important

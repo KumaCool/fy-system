@@ -232,6 +232,8 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.select .formItem div:not(.label) .payType
+    width 170px !important
 .ticketType >>>
     .v-btn
         color $_color_white
